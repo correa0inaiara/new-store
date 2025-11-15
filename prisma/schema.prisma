@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../prisma/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  categoryId                        Int                         @id @default(autoincrement())
+  name                              String                      @unique
+  title                             String
+  image                             Bytes?
+  subcategory                       Subcategory[]
+  product                           Product[]
+}
+
+model Subcategory {
+  subcategoryId                     Int                         @id @default(autoincrement())
+  name                              String                      @unique
+  title                             String
+  categoryId                        Int
+  image                             Bytes?
+  category                          Category                    @relation(fields: [categoryId], references: [categoryId])
+  product                           Product[]
+}
+
+model Product {
+  productId                         Int                         @id @default(autoincrement())
+  title                             String
+  price                             Decimal
+  description                       String
+  image                             Bytes?
+  stock                             Int
+  categoryId                        Int
+  category                          Category                    @relation(fields: [categoryId], references: [categoryId])
+  subcategoryId                     Int
+  subcategory                       Subcategory                 @relation(fields: [subcategoryId], references: [subcategoryId])
+}
+
+model User {
+  userId                            String                      @id
+  email                             String
+  cart                              Cart
+  // order                             Order[]
+}
+
+enum CART_STATUS {
+  ACTIVE // Itens sendo adicionados/removidos
+  ABANDONED // Usuário saiu sem finalizar
+  CHECKOUT_PENDING // Usuário iniciou checkout
+  COMPLETED // Compra finalizada, carrinho arquivado
+}
+
+model Cart {
+  cartId                            Int                         @id @default(autoincrement())
+  userId                            String
+  user                              User                        @relation(fields: [userId], references: [userId])
+  cartStatus                        CART_STATUS                 @default(ACTIVE)
+  cartItem                          CartItem[]
+}
+
+model CartItem {
+  cartItemId                        Int                         @id @default(autoincrement())
+  cartId                            Int
+  cart                              Cart                        @relation(fields: [cartId], references: [cartId])
+  productId                         Int
+  product                           Product                     @relation(fields: [productId], references: [productId])
+}
+
+// enum OrderStatus {
+  
+// }
+
+// model Order {
+//   orderId                           Int                         @id @default(autoincrement())
+//   userId                            String
+//   user                              User                        @relation(fields: [userId], references: [userId])
+//   status                            
+// }
