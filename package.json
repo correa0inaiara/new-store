@@ -6,20 +6,32 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:seed": "prisma db seed",
+    "db:seed:clean": "node -e \"process.env.SEED_CLEAN='true'\" && prisma db seed"
   },
   "browserslist": [
     "> 1%"
   ],
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seeds/seeds.ts"
+  },
   "dependencies": {
     "@clerk/nextjs": "^6.35.0",
-    "@prisma/client": "^6.19.0",
-    "@prisma/extension-accelerate": "^2.0.2",
+    "@neondatabase/serverless": "^1.0.2",
+    "@prisma/adapter-neon": "^7.1.0",
+    "@prisma/adapter-pg": "^7.1.0",
+    "@prisma/client": "^7.1.0",
+    "@prisma/extension-accelerate": "^3.0.1",
+    "@types/pg": "^8.16.0",
     "dotenv": "^17.2.3",
     "next": "16.0.1",
+    "pg": "^8.16.3",
     "postcss": "^8.5.6",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "ts-node": "^10.9.2",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -29,7 +41,7 @@
     "daisyui": "^5.5.3",
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
-    "prisma": "^6.19.0",
+    "prisma": "^7.1.0",
     "tailwindcss": "^4",
     "tsx": "^4.20.6",
     "typescript": "^5"
