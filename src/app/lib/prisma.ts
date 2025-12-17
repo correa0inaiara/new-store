@@ -1,14 +1,32 @@
-import { withAccelerate } from "@prisma/extension-accelerate"
-import { PrismaPg } from '@prisma/adapter-pg'
-import { Pool } from 'pg'
-import { PrismaClient } from "../../../prisma/generated/client"
+// lib/prisma.ts
 
-// configuração de uma pool de conexões
-const connectionString = process.env.DATABASE_URL!
-const pool = new Pool({ connectionString })
-const adapter = new PrismaPg(pool)
+import { withAccelerate } from '@prisma/extension-accelerate';
+import { PrismaClient } from '../../../prisma/generated/client';
 
-// criação do prismaclient com o adaptador
-const prisma = new PrismaClient({ adapter }).$extends(withAccelerate())
+const globalForPrisma = globalThis as unknown as {
+  prisma: ReturnType<typeof createPrismaClient> | undefined;
+};
 
-export default prisma
+function createPrismaClient() {
+  const databaseUrl = process.env.DATABASE_URL;
+  
+  if (!databaseUrl) {
+    throw new Error('DATABASE_URL is not defined');
+  }
+
+  return new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    accelerateUrl: databaseUrl,
+  }).$extends(withAccelerate());
+}
+
+// Criação com configuração adequada
+export const prisma = 
+  globalForPrisma.prisma ?? 
+  createPrismaClient();
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+}
+
+export default prisma;

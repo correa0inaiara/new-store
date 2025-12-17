@@ -33,6 +33,10 @@ export async function seedCategories(): Promise<SeedCategoriesResult> {
         name: 'books-media',
         title: 'Livros e Mídia',
       },
+      {
+        name: 'travel',
+        title: 'Viagens',
+      },
     ],
   });
 

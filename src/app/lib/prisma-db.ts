@@ -27,12 +27,17 @@ export async function getAllCategories() {
 
 export async function getAllSubcategories() {
   try {
-    const subcategories = await prisma.subcategory.findMany()
+    const subcategories = await prisma.subcategory.findMany({
+      include: {
+        category: true
+      }
+    })
     return Response.json(subcategories);
   } catch (error) {
     return Response.json({ error: 'Falha ao buscar subcategorias' }, { status: 500 });
   }
 }
+
 
 // export async function getProducts(query?: string) {
 //     await new Promise((resolve) => setTimeout(resolve, 1500))

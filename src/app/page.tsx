@@ -7,7 +7,7 @@ import { TodaysDeals } from "./components/todays-deals";
 import Link from "next/link";
 import GlobalError from "./global-error";
 
-export default function Home() {
+export default async function Home() {
   return (
     <>
       <Hero />
