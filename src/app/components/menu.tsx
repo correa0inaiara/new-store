@@ -48,34 +48,38 @@ export const Menu = async () => {
             <ul className="menu lg:menu-horizontal bg-base-200 rounded-box lg:mb-64">
                 <li>
                     <details>
-                        <summary>Categorias</summary>
-                            {categorias.map((categoria: Category) => (
-                                !categoria.hasSubcategories ? (
-                                    <li key={categoria.category_id}>
-                                        <Link href={`/categories/${categoria.name}`}>
-                                            {categoria.title}
-                                        </Link>
-                                    </li>
-                                ) : 
-                                (
-                                    <li key={categoria.category_id}>
-                                        <details>
-                                            <summary><Link href={`/categories/${categoria.name}`}>{categoria.title}</Link></summary>
-                                            <ul>
-                                                {subcategorias.map((subcategoria: Subcategory) => (
-                                                    subcategoria.category_id == categoria.category_id && (
-                                                        <li key={subcategoria.subcategory_id}>
-                                                            <Link href={`/categories/${categoria.name}/${subcategoria.name}`}>
-                                                                {subcategoria.title}
-                                                            </Link>
-                                                        </li>
-                                                    )
-                                                ))}
-                                            </ul>
-                                        </details>
-                                    </li>
-                                )
-                            ))}
+                        <summary>
+                            <Link href={`/categories`}>
+                                Categorias
+                            </Link>
+                        </summary>
+                        {categorias.map((categoria: Category) => (
+                            !categoria.hasSubcategories ? (
+                                <li key={categoria.category_id}>
+                                    <Link href={`/categories/${categoria.name}`}>
+                                        {categoria.title}
+                                    </Link>
+                                </li>
+                            ) : 
+                            (
+                                <li key={categoria.category_id}>
+                                    <details>
+                                        <summary><Link href={`/categories/${categoria.name}`}>{categoria.title}</Link></summary>
+                                        <ul>
+                                            {subcategorias.map((subcategoria: Subcategory) => (
+                                                subcategoria.category_id == categoria.category_id && (
+                                                    <li key={subcategoria.subcategory_id}>
+                                                        <Link href={`/categories/${categoria.name}/${subcategoria.name}`}>
+                                                            {subcategoria.title}
+                                                        </Link>
+                                                    </li>
+                                                )
+                                            ))}
+                                        </ul>
+                                    </details>
+                                </li>
+                            )
+                        ))}
                     </details>
                 </li>
             </ul>

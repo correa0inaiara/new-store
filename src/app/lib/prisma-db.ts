@@ -16,6 +16,13 @@ export async function getAllProducts() {
   }
 }
 
+export async function getProductById(product_id: string) {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    return prisma.product.findUnique({
+        where: {product_id}
+    })
+}
+
 export async function getAllCategories() {
   try {
     const categories = await prisma.category.findMany()
@@ -23,6 +30,13 @@ export async function getAllCategories() {
   } catch (error) {
     return Response.json({ error: 'Falha ao buscar categorias' }, { status: 500 });
   }
+}
+
+export async function getCategoryById(category_id: string) {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    return prisma.category.findUnique({
+        where: {category_id}
+    })
 }
 
 export async function getAllSubcategories() {
@@ -36,6 +50,13 @@ export async function getAllSubcategories() {
   } catch (error) {
     return Response.json({ error: 'Falha ao buscar subcategorias' }, { status: 500 });
   }
+}
+
+export async function getSubcategoryById(subcategory_id: string) {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    return prisma.subcategory.findUnique({
+        where: {subcategory_id}
+    })
 }
 
 
