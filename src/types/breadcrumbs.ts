@@ -1,5 +1,21 @@
 import { Products } from "./products";
 
+export type CategoryType = {
+   name: string
+   title: string
+   image: string
+   category_id: string
+}
+
+export type SubcategoryType = {
+  name: string
+  title: string
+  image: string
+  subcategory_id: string
+  category_id: string
+  category: CategoryType
+}
+
 export interface CategoriesInterface {
   [category: string]: CategoriesDetails
 }

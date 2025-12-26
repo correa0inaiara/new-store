@@ -28,6 +28,9 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" data-theme="light">
+        <head>
+          {/* <script src="https://kit.fontawesome.com/d1b3aa410c.js" crossorigin="anonymous"></script> */}
+        </head>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
