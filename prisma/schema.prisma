@@ -105,6 +105,7 @@ model Order_Item {
 }
 
 enum USER_ROLE {
+  ADMIN
   SELLER
   CUSTOMER
 }

@@ -23,6 +23,26 @@ export async function getProductById(product_id: string) {
     })
 }
 
+export async function getProductsByCategory(category_id: string) {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    return prisma.product.findMany({
+      include: {
+        category: true,
+      },
+      where: {category_id},
+    })
+}
+
+export async function getProductsBySubcategory(subcategory_id: string) {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    return prisma.product.findMany({
+      include: {
+        subcategory: true,
+      },
+      where: {subcategory_id},
+    })
+}
+
 export async function getAllCategories() {
   try {
     const categories = await prisma.category.findMany()

@@ -8,9 +8,9 @@ export const Authentication = () => {
                 <SignInButton mode="modal">
                     <button className="btn">Sign In</button>
                 </SignInButton>
-                <SignUpButton>
+                {/* <SignUpButton>
                     <button className="btn">Sign Up</button>
-                </SignUpButton>
+                </SignUpButton> */}
             </SignedOut>
             <SignedIn>
                 <UserButton />

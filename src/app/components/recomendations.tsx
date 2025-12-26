@@ -13,7 +13,7 @@ import produto_quebrado from './../../../public/produto-quebrado.png'
 export const Recomendations = ({ products }: { products: Products }) => {
     return (
 
-        <div className="px-20 py-20">
+        <div className="pt-5 pb-5">
             <Swiper
                 slidesPerView={3}
                 spaceBetween={30}

@@ -44,45 +44,41 @@ async function criaMenu(): Promise<[Category[], Subcategory[]]> {
 export const Menu = async () => {
     const [categorias, subcategorias] = await criaMenu()
     return (
-        <div>
-            <ul className="menu lg:menu-horizontal bg-base-200 rounded-box lg:mb-64">
-                <li>
-                    <details>
-                        <summary>
-                            <Link href={`/categories`}>
-                                Categorias
-                            </Link>
-                        </summary>
-                        {categorias.map((categoria: Category) => (
-                            !categoria.hasSubcategories ? (
-                                <li key={categoria.category_id}>
-                                    <Link href={`/categories/${categoria.name}`}>
-                                        {categoria.title}
-                                    </Link>
-                                </li>
-                            ) : 
-                            (
-                                <li key={categoria.category_id}>
-                                    <details>
-                                        <summary><Link href={`/categories/${categoria.name}`}>{categoria.title}</Link></summary>
-                                        <ul>
-                                            {subcategorias.map((subcategoria: Subcategory) => (
-                                                subcategoria.category_id == categoria.category_id && (
-                                                    <li key={subcategoria.subcategory_id}>
-                                                        <Link href={`/categories/${categoria.name}/${subcategoria.name}`}>
-                                                            {subcategoria.title}
-                                                        </Link>
-                                                    </li>
-                                                )
-                                            ))}
-                                        </ul>
-                                    </details>
-                                </li>
-                            )
-                        ))}
-                    </details>
-                </li>
-            </ul>
-        </div>
+        <li>
+                <details>
+                    <summary>
+                        <Link href={`/categories`}>
+                            Categorias
+                        </Link>
+                    </summary>
+                    {categorias.map((categoria: Category) => (
+                        !categoria.hasSubcategories ? (
+                            <li key={categoria.category_id}>
+                                <Link href={`/categories/${categoria.name}`}>
+                                    {categoria.title}
+                                </Link>
+                            </li>
+                        ) : 
+                        (
+                            <li key={categoria.category_id}>
+                                <details>
+                                    <summary><Link href={`/categories/${categoria.name}`}>{categoria.title}</Link></summary>
+                                    <ul>
+                                        {subcategorias.map((subcategoria: Subcategory) => (
+                                            subcategoria.category_id == categoria.category_id && (
+                                                <li key={subcategoria.subcategory_id}>
+                                                    <Link href={`/categories/${categoria.name}/${subcategoria.name}`}>
+                                                        {subcategoria.title}
+                                                    </Link>
+                                                </li>
+                                            )
+                                        ))}
+                                    </ul>
+                                </details>
+                            </li>
+                        )
+                    ))}
+                </details>
+        </li>
     )
 }

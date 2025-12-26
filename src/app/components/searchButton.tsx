@@ -1,0 +1,52 @@
+'use client'
+
+import { useRef } from "react";
+
+export const SearchButton = () => {
+    const modalRef = useRef<HTMLDialogElement>(null);
+
+    const openModal = () => {
+        if (modalRef.current) {
+            modalRef.current.showModal();
+        }
+    };
+
+    return (
+        <>
+            <button
+                className="btn"
+                onClick={openModal}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /> </svg>
+            </button>
+
+            <dialog ref={modalRef} id="my_modal_5" className="modal modal-bottom sm:modal-middle">
+                <div className="modal-box">
+                    {/* <h3 className="font-bold text-lg">Search</h3> */}
+
+                    <label className="input">
+                        <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <g
+                                strokeLinejoin="round"
+                                strokeLinecap="round"
+                                strokeWidth="2.5"
+                                fill="none"
+                                stroke="currentColor"
+                            >
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.3-4.3"></path>
+                            </g>
+                        </svg>
+                        <input type="search" required placeholder="Search" />
+                    </label>
+
+                    <div className="modal-action">
+                        <form method="dialog">
+                            {/* if there is a button in form, it will close the modal */}
+                            <button className="btn">Pesquisar</button>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
+        </>
+    )
+}
