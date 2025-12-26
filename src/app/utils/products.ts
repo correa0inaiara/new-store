@@ -1,4 +1,4 @@
-import { AgregacaoPorCategoria, AgregacaoPorSubcategoria, ContagemPorCategoria, ContagemPorSubcategoria } from '@//types/categories_subcategories'
+import { AgregacaoPorCategoria, AgregacaoPorSubcategoria, ContagemPorCategoria, ContagemPorSubcategoria } from '@//types/breadcrumbs'
 import { getAllProducts, getProductsByCategory, getProductsBySubcategory } from '../lib/prisma-db'
 import { StaticImageData } from 'next/image'
 import { Products } from '@//types/products'
