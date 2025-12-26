@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Header } from "./components/searchButton";
 import { Footer } from "./components/footer";
 import { Hero } from "./components/hero";
 import { BestDeals } from "./components/best-deals";

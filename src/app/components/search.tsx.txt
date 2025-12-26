@@ -1,9 +1,18 @@
 'use client'
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { getProducts } from "../lib/prisma-db";
 
-export const SearchButton = () => {
+async function searchKeywords(event: any, setInput: any) {
+    console.log('event', event)
+    setInput(event.target.value)
+    const products = await getProducts(event.target.value)
+    console.log('products', products)
+}
+
+export const Search = () => {
     const modalRef = useRef<HTMLDialogElement>(null);
+     const [input, setInput] = useState('')
 
     const openModal = () => {
         if (modalRef.current) {
@@ -13,9 +22,7 @@ export const SearchButton = () => {
 
     return (
         <>
-            <button
-                className="btn"
-                onClick={openModal}>
+            <button className="m-2.5" onClick={openModal}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /> </svg>
             </button>
 
@@ -36,7 +43,11 @@ export const SearchButton = () => {
                                 <path d="m21 21-4.3-4.3"></path>
                             </g>
                         </svg>
-                        <input type="search" required placeholder="Search" />
+                        <input 
+                            value={input} 
+                            onChange={(e) => searchKeywords(e, setInput)}
+                            type="search" 
+                            placeholder="Search" />
                     </label>
 
                     <div className="modal-action">

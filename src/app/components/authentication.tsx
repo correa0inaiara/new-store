@@ -6,7 +6,7 @@ export const Authentication = () => {
         <div className="flex items-center gap-4">
             <SignedOut>
                 <SignInButton mode="modal">
-                    <button className="btn">Sign In</button>
+                    <button className="m-2.5">Login</button>
                 </SignInButton>
                 {/* <SignUpButton>
                     <button className="btn">Sign Up</button>
@@ -14,8 +14,7 @@ export const Authentication = () => {
             </SignedOut>
             <SignedIn>
                 <UserButton />
-                <Link href="/user-profile">Profile</Link>
-                <SignOutButton />
+                {/* <SignOutButton /> */}
             </SignedIn>
         </div>
     )

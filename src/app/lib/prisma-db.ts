@@ -80,22 +80,23 @@ export async function getSubcategoryById(subcategory_id: string) {
 }
 
 
-// export async function getProducts(query?: string) {
-//     await new Promise((resolve) => setTimeout(resolve, 1500))
+export async function getProducts(query?: string) {
+  console.log("query", query)
+    await new Promise((resolve) => setTimeout(resolve, 1500))
 
-//     if (query) {
-//         return prisma.product.findMany({
-//             where: {
-//                 OR: [
-//                     { title: { contains: query } },
-//                     { description: { contains: query } }
-//                 ]
-//             }
-//         })
-//     }
+    if (query) {
+        return prisma.product.findMany({
+            where: {
+                OR: [
+                    { title: { contains: query } },
+                    { description: { contains: query } }
+                ]
+            }
+        })
+    }
 
-//     return prisma.product.findMany()
-// }
+    return prisma.product.findMany()
+}
 
 // export async function getProduct(id: number) {
 //     await new Promise((resolve) => setTimeout(resolve, 1500))
