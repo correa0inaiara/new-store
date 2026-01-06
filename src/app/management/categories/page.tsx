@@ -1,18 +1,74 @@
+'use client'
+
 import { HugeiconsIcon } from '@hugeicons/react'
-import { Delete02Icon, Notification03Icon, PencilEdit02Icon } from '@hugeicons/core-free-icons'
+import { Delete02Icon, PencilEdit02Icon } from '@hugeicons/core-free-icons'
 import { SubcategoryType } from "@//types/breadcrumbs"
-import { getCategories } from "./actions"
+import { getCategories, getSubcategoriasWithCategories } from "./actions"
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+
 
 export default async function Categories() {
-  //  const { sessionClaims } = await auth()
+  const [title, setTitle] = useState('')
+  const [name, setName] = useState('')
+  const [categoryBanner, setCategoryBanner] = useState('')
 
-  //   if (sessionClaims?.metadata?.role !== "seller") {
-  //       throw new Error("Not Authorized")
-  //   }
-// @ts-ignore
-// const myIcon : IconProp = "fa-regular fa-trash-can"
-  const results = await getCategories()
-  console.log('results', results)
+  const [titleSub, setTitleSub] = useState('')
+  const [nameSub, setNameSub] = useState('')
+  const [parentCategory, setParentCategory] = useState('')
+  const [subcategoryBanner, setSubcategoryBanner] = useState('')
+
+  const [loading, setLoading] = useState(false)
+
+  const subcategories = await getSubcategoriasWithCategories()
+  const categories = await getCategories()
+
+  const router = useRouter()
+
+  let index = 0
+
+  const handleCatFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setLoading(true)
+
+    try {
+      const response = await fetch('/react-form/api', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, name, categoryBanner })
+      })
+
+      if (response.ok) {
+        router.push('/api/categories')
+      }
+    } catch (error) {
+      console.error('Error: ', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSubFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setLoading(true)
+
+    try {
+      const response = await fetch('/react-form/api', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, name, parentCategory, subcategoryBanner })
+      })
+
+      if (response.ok) {
+        router.push('/api/subcategories')
+      }
+    } catch (error) {
+      console.error('Error: ', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div>
       <h2>Categories - Subcategories</h2>
@@ -25,52 +81,57 @@ export default async function Categories() {
           <p>Through the forms below you create categories and subcategories</p>
 
           <div className="flex justify-center mt-5">
-            <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-              <legend className="fieldset-legend">Category</legend>
+            <form onSubmit={handleCatFormSubmit}>
+              <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+                <legend className="fieldset-legend">Category</legend>
 
-              <label className="label">Name</label>
-              <input type="text" className="input" placeholder="Category Name" />
+                <label className="label">Title</label>
+                <input type="text" className="input" placeholder="Category Title" value={title} onChange={(e) => setTitle(e.target.value)} />
 
-              <button className="btn btn-neutral mt-4">Create</button>
-            </fieldset>
+                <label className="label">Name used internally, for example: if the title is Home Appliances, the name will be  home-appliances</label>
+                <input type="text" className="input" placeholder="Category Name" value={name} onChange={(e) => setName(e.target.value)} />
 
-            <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-              <legend className="fieldset-legend">Subcategory</legend>
+                <fieldset className="fieldset">
+                  <legend className="fieldset-legend">Upload the category's banner</legend>
+                  <input type="file" className="file-input" value={categoryBanner} onChange={(e) => setCategoryBanner(e.target.value)} />
+                  <label className="label">Max size 2MB</label>
+                </fieldset>
 
-              <label className="label">Name</label>
-              <input type="text" className="input" placeholder="Subcategory Name" />
+                <button className="btn btn-neutral mt-4">Create</button>
+              </fieldset>
+            </form>
+            <form onSubmit={handleSubFormSubmit}>
+              <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+                <legend className="fieldset-legend">Subcategory</legend>
 
-              <select defaultValue="Pick a color" className="select">
-                <option disabled={true}>Category</option>
-                <option>Crimson</option>
-                <option>Amber</option>
-                <option>Velvet</option>
-              </select>
+                <label className="label">Title</label>
+                <input type="text" className="input" placeholder="Subcategory Title" value={titleSub} onChange={(e) => setTitleSub(e.target.value)} />
 
-              <button className="btn btn-neutral mt-4">Create</button>
-            </fieldset>
+                <label className="label">Name used internally, for example: if the title is Home Appliances, the name will be  home-appliances</label>
+                <input type="text" className="input" placeholder="Category Name" value={nameSub} onChange={(e) => setNameSub(e.target.value)} />
+
+                <select defaultValue="Pick a category" className="select" value={parentCategory} onChange={(e) => setParentCategory(e.target.value)}>
+                  <option disabled={true}>Category</option>
+                  {categories.map((category: any) => (
+                    <option>{category.title}</option>
+                  ))}
+                </select>
+
+                <fieldset className="fieldset">
+                  <legend className="fieldset-legend">Upload the subcategory's banner</legend>
+                  <input type="file" className="file-input" value={subcategoryBanner} onChange={(e) => setSubcategoryBanner(e.target.value)} />
+                  <label className="label">Max size 2MB</label>
+                </fieldset>
+
+                <button className="btn btn-neutral mt-4">Create</button>
+              </fieldset>
+            </form>
+
+
+
           </div>
         </div>
       </div>
-
-      {/* 
-      
-      
-      {
-          "name": "smartphones",
-          "title": "Smartphones",
-          "image": null,
-          "category_id": "cbfce4fa-6789-4d26-a7ea-7c8686608306",
-          "subcategory_id": "028e78df-e270-487f-bdfa-6e6c0e076a9d",
-          "category": {
-              "name": "electronics",
-              "title": "Electrônicos",
-              "image": null,
-              "category_id": "cbfce4fa-6789-4d26-a7ea-7c8686608306"
-          }
-      }
-
-      */}
 
       <div className="overflow-x-auto">
         <table className="table">
@@ -83,9 +144,9 @@ export default async function Categories() {
             </tr>
           </thead>
           <tbody>
-            {results.map((result: SubcategoryType) => (
+            {subcategories.map((result: SubcategoryType) => (
               <tr key={result.subcategory_id} className="hover:bg-base-300">
-                <th>1</th>  
+                <th>{index += 1}</th>
                 <td>{result.title}</td>
                 <td>{result.category.title}</td>
                 <td>

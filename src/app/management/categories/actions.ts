@@ -1,9 +1,9 @@
 'use server'
 
 import { auth } from "@clerk/nextjs/server"
-import { getAllSubcategories } from "../../lib/prisma-db"
+import { getAllCategories, getAllSubcategories } from "../../lib/prisma-db"
 
-export async function getCategories() {
+export async function getSubcategoriasWithCategories() {
     const { sessionClaims } = await auth()
 
     if (sessionClaims?.metadata?.role !== "seller") {
@@ -12,6 +12,20 @@ export async function getCategories() {
 
     const subcategorias = await getAllSubcategories()
     return subcategorias.json().then((data) => {
+        console.log('data', data)
+        return data
+    })
+}
+
+export async function getCategories() {
+    const { sessionClaims } = await auth()
+
+    if (sessionClaims?.metadata?.role !== "seller") {
+        throw new Error("Not Authorized")
+    }
+
+    const categorias = await getAllCategories()
+    return categorias.json().then((data) => {
         console.log('data', data)
         return data
     })

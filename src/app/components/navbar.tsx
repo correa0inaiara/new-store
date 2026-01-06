@@ -21,7 +21,7 @@ export const Navbar = () => {
                 </div>
                 <Link href="/">
                     <Image 
-                        src="/logo.svg" 
+                        src="/logo2.svg" 
                         alt="New Store Logo"
                         width={150}
                         height={150}
