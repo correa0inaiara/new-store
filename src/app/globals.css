@@ -19,11 +19,11 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
-
+/* 
 .custom-slider {
   width: 70%;
   margin: 0 auto;
-}
+} */
 
 .custom-slider .slick-prev:before, .custom-slider .slick-next:before {
   color: var(--foreground)
