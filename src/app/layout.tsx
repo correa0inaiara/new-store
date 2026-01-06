@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Footer } from "./components/footer";
 import { Navbar } from "./components/navbar";
@@ -29,7 +31,6 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" data-theme="light">
         <head>
-          {/* <script src="https://kit.fontawesome.com/d1b3aa410c.js" crossorigin="anonymous"></script> */}
         </head>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}

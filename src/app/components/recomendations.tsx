@@ -1,20 +1,57 @@
 'use client'
 
 import Image from "next/image"
-import { Swiper, SwiperSlide } from 'swiper/react';
+// import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import { Navigation, Pagination, Mousewheel, Keyboard, FreeMode } from 'swiper/modules';
+// import 'swiper/css';
+// import 'swiper/css/navigation';
+// import 'swiper/css/pagination';
+// import { Navigation, Pagination, Mousewheel, Keyboard, FreeMode } from 'swiper/modules';
 import { Products } from "@//types/products";
 import produto_quebrado from './../../../public/produto-quebrado.png'
+import React from "react";
+import Slider from "react-slick";
 
 export const Recomendations = ({ products }: { products: Products }) => {
+    var settings = {
+        dots: true,
+        infinite: false,
+        speed: 500,
+        slidesToShow: 4,
+        slidesToScroll: 4,
+        initialSlide: 0,
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 3,
+                    infinite: true,
+                    dots: true
+                }
+            },
+            {
+                breakpoint: 600,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 2,
+                    initialSlide: 2
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                }
+            }
+        ]
+    };
+
     return (
 
-        <div className="pt-5 pb-5">
-            <Swiper
+        <div className="pt-5 pb-5 slider-container custom-slider">
+            {/* <Swiper
                 slidesPerView={3}
                 spaceBetween={30}
                 loop={true}
@@ -25,9 +62,9 @@ export const Recomendations = ({ products }: { products: Products }) => {
                 }}
                 modules={[FreeMode, Pagination, Navigation]}
                 className="mySwiper"
-            >
+            > */}
+            <Slider {...settings}>
                 {products.map((product, index) => (
-                    <SwiperSlide key={index}>
                         <div className="group card lg:card-side bg-base-100 shadow-sm rounded-xl overflow-hidden relative">
                             <figure className="relative w-full h-full">
                                 <Image
@@ -54,7 +91,6 @@ export const Recomendations = ({ products }: { products: Products }) => {
                                 </div>
                             </div>
                         </div>
-                    </SwiperSlide>
                 ))}
                 {/* {products.map((product, index) => (
                 <SwiperSlide>
@@ -85,7 +121,8 @@ export const Recomendations = ({ products }: { products: Products }) => {
                     </div>
                 </SwiperSlide>
             ))} */}
-            </Swiper>
+            {/* </Swiper> */}
+            </Slider>
         </div>
     )
 }
