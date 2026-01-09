@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAllSubcategories } from "../../lib/prisma-db-subcategories";
+import { getAllSubcategories, postSubcategory } from "../../lib/prisma-db-subcategories";
 
 export async function GET(request: NextRequest) {
     try {
@@ -10,22 +10,24 @@ export async function GET(request: NextRequest) {
     }
 }
 
-// export async function POST(request: Request) {
-//   const formData = await request.formData()
+export async function POST(request: Request) {
+  const formData = await request.formData()
   
-//   const title = formData.get('title') as string
-//   const name = formData.get('name') as string
-//   const imageFile = formData.get('image') as File
-//   const image_name = formData.get('image_name') as string
+  const title = formData.get('title') as string
+  const name = formData.get('name') as string
+  const imageFile = formData.get('image') as File
+  const image_name = formData.get('image_name') as string
+  const category_id = formData.get('category_id') as string
 
-//   // Converte File -> ArrayBuffer -> Buffer (Bytes para o Prisma)
-//   const bytes = await imageFile.arrayBuffer()
+  // Converte File -> ArrayBuffer -> Buffer (Bytes para o Prisma)
+  const bytes = await imageFile.arrayBuffer()
 
-//   // Chame sua função postCategory passando o buffer
-//   const category = await postSubcategory(title, name)
+  // Chame sua função postCategory passando o buffer
+  const category = await postSubcategory(title, name, category_id)
+  console.log("category route.ts", category)
   
-//   return new Response(JSON.stringify({ success: true }), { status: 201 })
-// }
+  return new Response(JSON.stringify({ success: true }), { status: 201 })
+}
 
 // export async function GET(req: Request) {
 //   const { searchParams } = new URL(req.url);
