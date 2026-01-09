@@ -4,6 +4,7 @@ export type CategoryType = {
    name: string
    title: string
    image: string
+   image_name: string
    category_id: string
 }
 

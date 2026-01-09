@@ -1,11 +1,12 @@
-import { getAllCategories, getAllSubcategories } from "../lib/prisma-db"
 import { Category, Subcategory } from "@//types/menu"
 import Link from "next/link"
+import { getAllCategories } from "../lib/prisma-db-categories"
+import { getAllSubcategories } from "../lib/prisma-db-subcategories"
 
 async function getCategories() {
     try {
         const results = await getAllCategories()
-        return results.json()
+        return results
     } catch (error) {
         console.log('algo deu errado com o retorno das categorias...')
     }
@@ -14,7 +15,7 @@ async function getCategories() {
 async function getSubcategories() {
   try {
     const results = await getAllSubcategories()
-    return results.json()
+    return results
   } catch (error) {
     console.log('algo deu errado com o retorno das categorias...')
   }

@@ -1,101 +1,11 @@
 // import prisma from "./prisma"
 
-import prisma from "./prisma";
+import * as products from './prisma-db-products';
+import * as categories from './prisma-db-categories';
+import * as subcategories from './prisma-db-subcategories';
 
-export async function getAllProducts() {
-  try {
-    const products = await prisma.product.findMany({
-      include: {
-        category: true,    // Inclui os dados da categoria relacionada
-        subcategory: true, // Inclui os dados da subcategoria relacionada
-      },
-    });
-    return Response.json(products);
-  } catch (error) {
-    return Response.json({ error: 'Falha ao buscar produtos' }, { status: 500 });
-  }
-}
-
-export async function getProductById(product_id: string) {
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    return prisma.product.findUnique({
-        where: {product_id}
-    })
-}
-
-export async function getProductsByCategory(category_id: string) {
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    return prisma.product.findMany({
-      include: {
-        category: true,
-      },
-      where: {category_id},
-    })
-}
-
-export async function getProductsBySubcategory(subcategory_id: string) {
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    return prisma.product.findMany({
-      include: {
-        subcategory: true,
-      },
-      where: {subcategory_id},
-    })
-}
-
-export async function getAllCategories() {
-  try {
-    const categories = await prisma.category.findMany()
-    return Response.json(categories);
-  } catch (error) {
-    return Response.json({ error: 'Falha ao buscar categorias' }, { status: 500 });
-  }
-}
-
-export async function getCategoryById(category_id: string) {
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    return prisma.category.findUnique({
-        where: {category_id}
-    })
-}
-
-export async function getAllSubcategories() {
-  try {
-    const subcategories = await prisma.subcategory.findMany({
-      include: {
-        category: true
-      }
-    })
-    return Response.json(subcategories);
-  } catch (error) {
-    return Response.json({ error: 'Falha ao buscar subcategorias' }, { status: 500 });
-  }
-}
-
-export async function getSubcategoryById(subcategory_id: string) {
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    return prisma.subcategory.findUnique({
-        where: {subcategory_id}
-    })
-}
-
-
-export async function getProducts(query?: string) {
-  console.log("query", query)
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    if (query) {
-        return prisma.product.findMany({
-            where: {
-                OR: [
-                    { title: { contains: query } },
-                    { description: { contains: query } }
-                ]
-            }
-        })
-    }
-
-    return prisma.product.findMany()
+export default {
+  products, categories, subcategories
 }
 
 // export async function getProduct(id: number) {

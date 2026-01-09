@@ -3,70 +3,94 @@
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Delete02Icon, PencilEdit02Icon } from '@hugeicons/core-free-icons'
 import { SubcategoryType } from "@//types/breadcrumbs"
-import { getCategories, getSubcategoriasWithCategories } from "./actions"
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 
-export default async function Categories() {
+export default function Categories() {
   const [title, setTitle] = useState('')
   const [name, setName] = useState('')
-  const [categoryBanner, setCategoryBanner] = useState('')
+  const [categoryBanner, setCategoryBanner] = useState<File | null>(null)
 
   const [titleSub, setTitleSub] = useState('')
   const [nameSub, setNameSub] = useState('')
   const [parentCategory, setParentCategory] = useState('')
-  const [subcategoryBanner, setSubcategoryBanner] = useState('')
+  const [subcategoryBanner, setSubcategoryBanner] = useState<File | null>(null)
 
   const [loading, setLoading] = useState(false)
-
-  const subcategories = await getSubcategoriasWithCategories()
-  const categories = await getCategories()
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
   const router = useRouter()
+  const [categories, setCategories] = useState<Record<string, any>[]>([])
+  const [subcategories, setSubcategories] = useState<Record<string, any>[]>([])
 
   let index = 0
 
+  useEffect(() => {
+    const loadCategories = async () => {
+      const response = await fetch('/api/categories', {
+        method: 'GET'
+      })
+
+      const data: Record<string, any>[] = await response.json();
+      setCategories(data)
+    }
+
+    const loadSubcategories = async () => {
+      const response = await fetch('/api/subcategories', {
+        method: 'GET'
+      })
+
+      const data: Record<string, any>[] = await response.json();
+      setSubcategories(data)
+    }
+
+    loadCategories()
+    loadSubcategories()
+  }, [])
+
+  useEffect(() => {
+    if (!categoryBanner) {
+      setPreviewUrl(null)
+      return
+    }
+
+    const objectUrl = URL.createObjectURL(categoryBanner)
+    setPreviewUrl(objectUrl)
+
+    return () => URL.revokeObjectURL(objectUrl)
+  }, [categoryBanner])
+
   const handleCatFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (!categoryBanner) return alert("Selecione uma imagem")
+
     setLoading(true)
 
     try {
-      const response = await fetch('/react-form/api', {
+      const formData = new FormData()
+      formData.append('title', title)
+      formData.append('name', name)
+      formData.append('image', categoryBanner)
+      formData.append('image_name', categoryBanner.name)
+
+      const response = await fetch('/api/categories', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, name, categoryBanner })
+        body: formData
       })
 
       if (response.ok) {
-        router.push('/api/categories')
+        router.refresh()
+        alert("Categoria criada com sucesso!")
       }
     } catch (error) {
       console.error('Error: ', error)
     } finally {
       setLoading(false)
     }
-  }
 
-  const handleSubFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setLoading(true)
 
-    try {
-      const response = await fetch('/react-form/api', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, name, parentCategory, subcategoryBanner })
-      })
 
-      if (response.ok) {
-        router.push('/api/subcategories')
-      }
-    } catch (error) {
-      console.error('Error: ', error)
-    } finally {
-      setLoading(false)
-    }
   }
 
   return (
@@ -81,26 +105,47 @@ export default async function Categories() {
           <p>Through the forms below you create categories and subcategories</p>
 
           <div className="flex justify-center mt-5">
+
+
+
             <form onSubmit={handleCatFormSubmit}>
               <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
                 <legend className="fieldset-legend">Category</legend>
 
                 <label className="label">Title</label>
-                <input type="text" className="input" placeholder="Category Title" value={title} onChange={(e) => setTitle(e.target.value)} />
+                <input type="text" className="input" value={title} onChange={(e) => setTitle(e.target.value)} />
 
-                <label className="label">Name used internally, for example: if the title is Home Appliances, the name will be  home-appliances</label>
-                <input type="text" className="input" placeholder="Category Name" value={name} onChange={(e) => setName(e.target.value)} />
+                <label className="label">Name (Internal)</label>
+                <input type="text" className="input" value={name} onChange={(e) => setName(e.target.value)} />
 
                 <fieldset className="fieldset">
-                  <legend className="fieldset-legend">Upload the category's banner</legend>
-                  <input type="file" className="file-input" value={categoryBanner} onChange={(e) => setCategoryBanner(e.target.value)} />
-                  <label className="label">Max size 2MB</label>
+                  <legend className="fieldset-legend">Banner</legend>
+                  <input
+                    type="file"
+                    className="file-input"
+                    accept="image/*"
+                    onChange={(e) => setCategoryBanner(e.target.files?.[0] || null)}
+                  />
+
+                  {/* Renderização Condicional do Preview */}
+                  {previewUrl && (
+                    <div className="mt-4">
+                      <p className="text-xs mb-2">Preview:</p>
+                      <img
+                        src={previewUrl}
+                        alt="Preview"
+                        className="w-full max-w-xs rounded-lg border border-base-300 shadow-sm"
+                      />
+                    </div>
+                  )}
                 </fieldset>
 
-                <button className="btn btn-neutral mt-4">Create</button>
+                <button className="btn btn-neutral mt-4" disabled={loading}>
+                  {loading ? 'Creating...' : 'Create'}
+                </button>
               </fieldset>
             </form>
-            <form onSubmit={handleSubFormSubmit}>
+            {/* <form onSubmit={handleSubFormSubmit}>
               <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
                 <legend className="fieldset-legend">Subcategory</legend>
 
@@ -125,7 +170,7 @@ export default async function Categories() {
 
                 <button className="btn btn-neutral mt-4">Create</button>
               </fieldset>
-            </form>
+            </form> */}
 
 
 
@@ -144,17 +189,17 @@ export default async function Categories() {
             </tr>
           </thead>
           <tbody>
-            {subcategories.map((result: SubcategoryType) => (
+            {subcategories.map((result: Record<string, any>, index: number) => (
               <tr key={result.subcategory_id} className="hover:bg-base-300">
-                <th>{index += 1}</th>
+                <th>{index + 1}</th>
                 <td>{result.title}</td>
-                <td>{result.category.title}</td>
+                <td>{result.category?.title}</td>
                 <td>
                   <button className="btn">
-                    <HugeiconsIcon icon={Delete02Icon} size={24} color="currentColor" strokeWidth={1.5} />
+                    <HugeiconsIcon icon={Delete02Icon} size={24} />
                   </button>
                   <button className="btn">
-                    <HugeiconsIcon icon={PencilEdit02Icon} size={24} color="currentColor" strokeWidth={1.5} />
+                    <HugeiconsIcon icon={PencilEdit02Icon} size={24} />
                   </button>
                 </td>
               </tr>
