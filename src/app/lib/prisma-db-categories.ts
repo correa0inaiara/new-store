@@ -29,3 +29,29 @@ export async function postCategory(
         }
     })
 }
+
+export async function getCategory(category_id: string) {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    return prisma.category.findUnique({
+        where: {category_id}
+    })
+}
+
+export async function updateCategory(
+    category_id: string,
+    title: string,
+    name: string
+) {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    return prisma.category.update({
+        where: { category_id },
+        data: { name, title }
+    })
+}
+
+export async function deleteCategory(category_id: string) {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    return prisma.category.delete({
+        where: {category_id}
+    })
+}
