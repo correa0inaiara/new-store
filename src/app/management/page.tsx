@@ -19,6 +19,9 @@ export default async function Management() {
                 <Link href="/management/categories">Categories</Link>
             </li>
             <li>
+                <Link href="/management/subcategories">Subcategories</Link>
+            </li>
+            <li>
                 <Link href="/dashboard">Voltar</Link>
             </li>
         </ul>

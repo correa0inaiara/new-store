@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: Request) {
+    console.log('/api/categories post')
   const formData = await request.formData()
   
   const title = formData.get('title') as string

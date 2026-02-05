@@ -4,7 +4,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { Delete02Icon, PencilEdit02Icon } from '@hugeicons/core-free-icons'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { SubcategoryResponse } from '@//types/subcategories'
+import { CategoryResponse } from '@//types/categories'
 
 
 export default function Categories() {
@@ -12,24 +12,16 @@ export default function Categories() {
   const [name, setName] = useState('')
   const [categoryBanner, setCategoryBanner] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
-
-  const [titleSub, setTitleSub] = useState('')
-  const [nameSub, setNameSub] = useState('')
-  const [parentCategory, setParentCategory] = useState('')
-  const [subcategoryBanner, setSubcategoryBanner] = useState<File | null>(null)
-  const [previewUrlSub, setPreviewUrlSub] = useState<string | null>(null)
-
-  const [loading, setLoading] = useState(false)
+  const [editingCat, setEditingCat] = useState<CategoryResponse | null>(null)
+  const [loadingCat, setLoadingCat] = useState(false)
 
   const router = useRouter()
   const [categories, setCategories] = useState<Record<string, any>[]>([])
-  const [subcategories, setSubcategories] = useState<Record<string, any>[]>([])
 
   let index = 0
 
   useEffect(() => {
     loadCategories()
-    loadSubcategories()
   }, [])
 
   useEffect(() => {
@@ -44,21 +36,17 @@ export default function Categories() {
     return () => URL.revokeObjectURL(objectUrl)
   }, [categoryBanner])
 
-  useEffect(() => {
-    if (!subcategoryBanner) {
-      setPreviewUrlSub(null)
-      return
-    }
+  const resetForm = () => {
+    setTitle('')
+    setName('')
+    setCategoryBanner(null)
+    setPreviewUrl(null)
+    setEditingCat(null)
+  }
 
-    const objectUrlSub = URL.createObjectURL(subcategoryBanner)
-    setPreviewUrlSub(objectUrlSub)
-
-    return () => URL.revokeObjectURL(objectUrlSub)
-  }, [subcategoryBanner])
-
-  const atualizarLista = async () => {
-    setSubcategories([])
-    await loadSubcategories()
+  const atualizarCategorias = async () => {
+    setCategories([])
+    await loadCategories()
   }
 
   const loadCategories = async () => {
@@ -69,21 +57,16 @@ export default function Categories() {
     const data: Record<string, any>[] = await response.json();
     setCategories(data)
   }
-
-  const loadSubcategories = async () => {
-    const response = await fetch('/api/subcategories', {
-      method: 'GET'
-    })
-
-    const data: Record<string, any>[] = await response.json();
-    setSubcategories(data)
+  
+  const handleCatFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    editingCat ? handleCatEditFormSubmit(e, editingCat.category_id) : handleOnCategoryFormSubmit(e)
   }
 
-  const handleCatFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleOnCategoryFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!categoryBanner) return alert("Selecione uma imagem")
 
-    setLoading(true)
+    setLoadingCat(true)
 
     try {
       const formData = new FormData()
@@ -99,106 +82,97 @@ export default function Categories() {
 
       if (response.ok) {
         router.refresh()
+        atualizarCategorias()
+        resetForm()
         alert("Categoria criada com sucesso!")
       }
     } catch (error) {
       console.error('Error: ', error)
     } finally {
-      setLoading(false)
+      setLoadingCat(false)
     }
 
   }
 
-  const handleSubFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCatEditFormSubmit = async (e: React.FormEvent<HTMLFormElement>, category_id: string) => {
     e.preventDefault()
-    if (!subcategoryBanner) return alert("Selecione uma imagem")
+    if (!categoryBanner) return alert("Selecione uma imagem")
 
-    setLoading(true)
+    setLoadingCat(true)
 
     try {
       const formData = new FormData()
-      formData.append('title', titleSub)
-      formData.append('name', nameSub)
-      formData.append('image', subcategoryBanner)
-      formData.append('image_name', subcategoryBanner.name)
-      formData.append('category_id', parentCategory)
+      formData.append('title', title)
+      formData.append('name', name)
+      // formData.append('image', categoryBanner)
+      formData.append('image_name', categoryBanner.name)
 
-      const response = await fetch('/api/subcategories', {
-        method: 'POST',
+      const response = await fetch(`/api/categories/${category_id}`, {
+        method: 'PATCH',
         body: formData
       })
 
       if (response.ok) {
         router.refresh()
-        alert("Subcategoria criada com sucesso!")
+        atualizarCategorias()
+        resetForm()
+        alert("Categoria editada com sucesso!")
       }
     } catch (error) {
       console.error('Error: ', error)
     } finally {
-      setLoading(false)
+      setLoadingCat(false)
     }
 
   }
 
-  const handleOnDelete = async (subcategory_id: String) => {
-    setLoading(true)
+  const handleOnCategoryDelete = async (category_id: String) => {
+    setLoadingCat(true)
 
     try {
-      const response = await fetch(`/api/subcategories/${subcategory_id}`, {
+      const response = await fetch(`/api/categories/${category_id}`, {
         method: 'DELETE'
       })
 
       if (response.ok) {
         router.refresh()
+        atualizarCategorias()
         alert("Categoria deletada com sucesso!")
       }
     } catch (error) {
       console.error('Error: ', error)
     } finally {
-      setLoading(false)
+      setLoadingCat(false)
     }
   }
 
-  const handleOnEdit = async (subcategory_id: String) => {
-    setLoading(true)
+  const handleOnCategoryEdit = async (category_id: String) => {
+    setLoadingCat(true)
 
     try {
-      const response = await fetch(`/api/subcategories/${subcategory_id}`, {
+      const response = await fetch(`/api/categories/${category_id}`, {
         method: 'GET'
       })
 
-
-      /* 
-      
-        {
-          "name": "movies",
-          "title": "Filmes",
-          "category_id": "a9855c3a-cefe-4202-af18-8ec4ba9de197",
-          "subcategory_id": "54cdc2e7-0c1d-4a70-88f6-26a89b2d921a"
-        }
-
-      */
-
       if (response.ok) {
-        const data: SubcategoryResponse = await response.json()
+        const data: CategoryResponse = await response.json()
         console.log(data)
-        setTitleSub(data.title)
-        setNameSub(data.name)
-        setParentCategory(data.category_id)
-        // router.refresh()
-        // alert("Categoria atualizada com sucesso!")
+        setTitle(data.title)
+        setName(data.name)
+        setEditingCat(data)
       }
+
     } catch (error) {
       console.error('Error: ', error)
     } finally {
-      setLoading(false)
+      setLoadingCat(false)
     }
   }
 
   return (
     <div>
-      <h2>Categories - Subcategories</h2>
-      <p>On this page you can edit all the categories and subcategories of the website</p>
+      <h2>Categories</h2>
+      <p>On this page you can edit all the categories of the website</p>
 
       <div className="flex justify-center gap-10 mt-5">
         <form onSubmit={handleCatFormSubmit}>
@@ -232,45 +206,31 @@ export default function Categories() {
               )}
             </fieldset>
 
-            <button className="btn btn-neutral mt-4" disabled={loading}>
-              {loading ? 'Creating...' : 'Create'}
-            </button>
-          </fieldset>
-        </form>
-        <form onSubmit={handleSubFormSubmit}>
-          <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-            <legend className="fieldset-legend">SubCategory</legend>
-
-            <label className="label">Title</label>
-            <input type="text" className="input" value={titleSub} onChange={(e) => setTitleSub(e.target.value)} />
-
-            <label className="label">Name (Internal)</label>
-            <input type="text" className="input" value={nameSub} onChange={(e) => setNameSub(e.target.value)} />
-
-            <select defaultValue="Pick a category" className="select" onChange={(e) => setParentCategory(e.target.value)}>
-              <option disabled={true}>Category</option>
-              {categories.map((category: any) => (
-                <option key={category.category_id} value={category.category_id}>{category.title}</option>
-              ))}
-            </select>
-
-            <fieldset className="fieldset">
-              <legend className="fieldset-legend">Banner</legend>
-              <input type="file" className="file-input" accept="image/*" onChange={(e) => setSubcategoryBanner(e.target.files?.[0]
-                || null)}
-              />
-
-              {/* Renderização Condicional do Preview */}
-              {previewUrlSub && (
-                <div className="mt-4">
-                  <p className="text-xs mb-2">Preview:</p>
-                  <img src={previewUrlSub} alt="Preview" className="w-full max-w-xs rounded-lg border border-base-300 shadow-sm" />
-                </div>
-              )}
-            </fieldset>
-
-            <button className="btn btn-neutral mt-4" disabled={loading}>
-              {loading ? 'Creating...' : 'Create'}
+            <button className="btn btn-neutral mt-4" disabled={loadingCat}>
+              {/* 
+                - editando categoria?
+                  - sim
+                    - carregando categoria?
+                      - sim: Editando
+                      - não: Editar
+                  - não
+                    - carregando categoria?
+                      - sim: Criando
+                      - não: Criar
+              */}
+              {
+                editingCat ?
+                  (
+                    loadingCat ?
+                      ('Editing') :
+                      ('Edit')
+                  ) :
+                  (
+                    loadingCat ?
+                      ('Creating') :
+                      ('Create')
+                  )
+              }
             </button>
           </fieldset>
         </form>
@@ -279,31 +239,31 @@ export default function Categories() {
       <div className="overflow-x-auto mt-5">
         <button
           className="btn"
-          onClick={atualizarLista}
-        >Recarregar Lista</button>
+          onClick={atualizarCategorias}
+        >Recarregar Categorias</button>
         <table className="table">
           <thead>
             <tr>
               <th></th>
-              <th>Subcategory</th>
               <th>Category</th>
+              <th>Internal Name</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {subcategories.map((result: Record<string, any>, index: number) => (
-              <tr key={result.subcategory_id} className="hover:bg-base-300">
+            {categories.map((result: Record<string, any>, index: number) => (
+              <tr key={result.category_id} className="hover:bg-base-300">
                 <th>{index + 1}</th>
                 <td>{result.title}</td>
-                <td>{result.category?.title}</td>
+                <td>{result.name}</td>
                 <td>
                   <button 
-                    onClick={() => handleOnDelete(result.subcategory_id)}
+                    onClick={() => handleOnCategoryDelete(result.category_id)}
                     className="btn">
                     <HugeiconsIcon icon={Delete02Icon} size={24} />
                   </button>
                   <button 
-                    onClick={() => handleOnEdit(result.subcategory_id)}
+                    onClick={() => handleOnCategoryEdit(result.category_id)}
                     className="btn">
                     <HugeiconsIcon icon={PencilEdit02Icon} size={24} />
                   </button>

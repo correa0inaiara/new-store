@@ -25,7 +25,7 @@ export async function PATCH(
     { params }: { params: Promise<{id: string}> }
 ) {
     try {
-        const body = await request.json()
+        const formData = await request.formData()
         const { id } = await params
         const subcategoria = await getSubcategory(id);
 
@@ -33,9 +33,13 @@ export async function PATCH(
             return NextResponse.json({ error: "Subcategory Not Found" }, { status: 404 });
         }
 
-        subcategoria.name = body?.name ? body.name : subcategoria.name
-        subcategoria.title = body?.title ? body.title : subcategoria.title
-        subcategoria.category_id = body?.category_id ? body.category_id : subcategoria.category_id
+        const title = formData.get('title') as string
+        const name = formData.get('name') as string
+        const category_id = formData.get('category_id') as string
+
+        subcategoria.name = name || subcategoria.name
+        subcategoria.title = title || subcategoria.title
+        subcategoria.category_id = category_id || subcategoria.category_id
 
         const result = await updateSubcategory(id, subcategoria?.title, subcategoria?.name, subcategoria?.category_id);
 

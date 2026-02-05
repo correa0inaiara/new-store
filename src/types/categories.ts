@@ -1,6 +1,12 @@
 import { Products } from "./products";
 import { BreadcrumbSubcategoria } from "./subcategories";
 
+export type CategoryResponse = {
+  name: string
+  title: string
+  category_id: string
+}
+
 export type CategoryType = {
    name: string
    title: string
