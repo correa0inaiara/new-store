@@ -1,7 +1,8 @@
-import { AgregacaoPorCategoria, AgregacaoPorSubcategoria, ContagemPorCategoria, ContagemPorSubcategoria } from '@//types/breadcrumbs'
-import { getAllProducts, getProductsByCategory, getProductsBySubcategory } from '../lib/prisma-db'
+import { AgregacaoPorCategoria, ContagemPorCategoria } from '@//types/categories'
 import { StaticImageData } from 'next/image'
 import { Products } from '@//types/products'
+import { getAllProducts, getProductsByCategory, getProductsBySubcategory } from '../lib/prisma-db-products'
+import { AgregacaoPorSubcategoria, ContagemPorSubcategoria } from '@//types/subcategories'
 
 async function getProducts() {
     try {

@@ -1,11 +1,11 @@
+import { BreadcrumbCategoria, Category, CategoryType } from "./categories";
 import { Products } from "./products";
 
-export type CategoryType = {
-   name: string
-   title: string
-   image: string
-   image_name: string
-   category_id: string
+export type SubcategoryResponse = {
+  name: string
+  title: string
+  subcategory_id: string
+  category_id: string
 }
 
 export type SubcategoryType = {
@@ -16,60 +16,6 @@ export type SubcategoryType = {
   category_id: string
   category: CategoryType
 }
-
-export interface CategoriesInterface {
-  [category: string]: CategoriesDetails
-}
-
-export type CategoriesDetails = {
-  name: string
-  title: string
-  link: string
-  banner?: string
-  icon?: string
-}
-
-export const Category: CategoriesInterface = {
-    ELECTRONICS: {
-      name: 'electronics',
-      title: 'Electronics',
-      link: '/electronics'
-    },
-    HOME_APPLIANCES: {
-      name: 'home_appliances',
-      title: 'Home Appliances',
-      link: '/home-appliances'
-    },
-    FASHION: {
-      name: 'fashion',
-      title: 'Fashion',
-      link: '/fashion'
-    },
-    SPORTS: {
-      name: 'sports',
-      title: 'Sports',
-      link: '/sports'
-    },
-    BOOKS_AND_MEDIA: {
-      name: 'books_and_media',
-      title: 'Books and Media',
-      link: '/books-and-media'
-    },
-    TRAVEL: {
-      name: 'travel',
-      title: 'Travel',
-      link: '/travel'
-    }
-}
-
-export const CategoryEnum = {
-  ELECTRONICS: Category.ELECTRONICS.name,
-  HOME_APPLIANCES: Category.HOME_APPLIANCES.name,
-  FASHION: Category.FASHION.name,
-  SPORTS: Category.SPORTS.name,
-  BOOKS_AND_MEDIA: Category.BOOKS_AND_MEDIA.name,
-  TRAVEL: Category.TRAVEL.name
-};
 
 export interface SubcategoriesInterface {
   [subcategory: string]: SubcategoryDetails
@@ -209,25 +155,12 @@ export const SubcategoryEnum = {
    MOVIES: Subcategory.MOVIES.name
 }
 
-export interface AgregacaoPorCategoria {
-  [categoria: string]: Products;
-}
-
 export interface AgregacaoPorSubcategoria {
   [subcategoria: string]: Products;
 }
 
-export interface ContagemPorCategoria {
-  [categoria: string]: number;
-}
-
 export interface ContagemPorSubcategoria {
   [subcategoria: string]: number;
-}
-
-export interface BreadcrumbCategoria {
-  nome: keyof typeof Category
-  link: string
 }
 
 export interface BreadcrumbSubcategoria {

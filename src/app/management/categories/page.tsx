@@ -2,9 +2,9 @@
 
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Delete02Icon, PencilEdit02Icon } from '@hugeicons/core-free-icons'
-import { SubcategoryType } from "@//types/breadcrumbs"
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { SubcategoryResponse } from '@//types/subcategories'
 
 
 export default function Categories() {
@@ -140,6 +140,61 @@ export default function Categories() {
 
   }
 
+  const handleOnDelete = async (subcategory_id: String) => {
+    setLoading(true)
+
+    try {
+      const response = await fetch(`/api/subcategories/${subcategory_id}`, {
+        method: 'DELETE'
+      })
+
+      if (response.ok) {
+        router.refresh()
+        alert("Categoria deletada com sucesso!")
+      }
+    } catch (error) {
+      console.error('Error: ', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleOnEdit = async (subcategory_id: String) => {
+    setLoading(true)
+
+    try {
+      const response = await fetch(`/api/subcategories/${subcategory_id}`, {
+        method: 'GET'
+      })
+
+
+      /* 
+      
+        {
+          "name": "movies",
+          "title": "Filmes",
+          "category_id": "a9855c3a-cefe-4202-af18-8ec4ba9de197",
+          "subcategory_id": "54cdc2e7-0c1d-4a70-88f6-26a89b2d921a"
+        }
+
+      */
+
+      if (response.ok) {
+        const data: SubcategoryResponse = await response.json()
+        console.log(data)
+        setTitleSub(data.title)
+        setNameSub(data.name)
+        setParentCategory(data.category_id)
+        // router.refresh()
+        // alert("Categoria atualizada com sucesso!")
+      }
+    } catch (error) {
+      console.error('Error: ', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div>
       <h2>Categories - Subcategories</h2>
@@ -192,10 +247,10 @@ export default function Categories() {
             <label className="label">Name (Internal)</label>
             <input type="text" className="input" value={nameSub} onChange={(e) => setNameSub(e.target.value)} />
 
-            <select defaultValue="Pick a category" className="select" value={parentCategory} onChange={(e) => setParentCategory(e.target.value)}>
+            <select defaultValue="Pick a category" className="select" onChange={(e) => setParentCategory(e.target.value)}>
               <option disabled={true}>Category</option>
               {categories.map((category: any) => (
-                <option value={category.category_id}>{category.title}</option>
+                <option key={category.category_id} value={category.category_id}>{category.title}</option>
               ))}
             </select>
 
@@ -242,10 +297,14 @@ export default function Categories() {
                 <td>{result.title}</td>
                 <td>{result.category?.title}</td>
                 <td>
-                  <button className="btn">
+                  <button 
+                    onClick={() => handleOnDelete(result.subcategory_id)}
+                    className="btn">
                     <HugeiconsIcon icon={Delete02Icon} size={24} />
                   </button>
-                  <button className="btn">
+                  <button 
+                    onClick={() => handleOnEdit(result.subcategory_id)}
+                    className="btn">
                     <HugeiconsIcon icon={PencilEdit02Icon} size={24} />
                   </button>
                 </td>

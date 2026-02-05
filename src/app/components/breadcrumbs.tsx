@@ -1,6 +1,6 @@
 'use client'
 
-import { BreadcrumbCategoria, BreadcrumbsType, BreadcrumbSubcategoria, CategoryEnum } from '@//types/breadcrumbs'
+import { BreadcrumbCategoria, BreadcrumbsType, BreadcrumbSubcategoria, CategoryEnum } from '@//types/categories'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 

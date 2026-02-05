@@ -6,7 +6,7 @@ export const Authentication = () => {
         <div className="flex items-center gap-4">
             <SignedOut>
                 <SignInButton mode="modal">
-                    <button className="m-2.5">Login</button>
+                    <button className="m-2.5 btn">Login</button>
                 </SignInButton>
                 {/* <SignUpButton>
                     <button className="btn">Sign Up</button>

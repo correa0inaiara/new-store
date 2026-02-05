@@ -1,7 +1,6 @@
 'use client'
 
 import { useRef, useState } from "react";
-import { getProducts } from "../lib/prisma-db";
 import ListProducts from "./list-products";
 
 
