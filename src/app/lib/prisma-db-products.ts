@@ -1,5 +1,7 @@
-import { Decimal } from "@prisma-client/internal/prismaNamespace";
+
+import { Prisma } from "@prisma/client/scripts/default-index.js";
 import prisma from "./prisma";
+import { Decimal } from "@prisma/client/runtime/client";
 
 export async function getProducts(query?: string) {
   console.log("query", query)

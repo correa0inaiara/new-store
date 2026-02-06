@@ -1,7 +1,7 @@
 // lib/prisma.ts
 
+import { PrismaClient } from '@prisma/client/scripts/default-index.js';
 import { withAccelerate } from '@prisma/extension-accelerate';
-import { PrismaClient } from '../../../prisma/generated/client';
 
 const globalForPrisma = globalThis as unknown as {
   prisma: ReturnType<typeof createPrismaClient> | undefined;
