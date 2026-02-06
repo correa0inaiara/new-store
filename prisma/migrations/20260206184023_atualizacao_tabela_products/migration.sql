@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Product" ADD COLUMN     "brand" TEXT NOT NULL DEFAULT '',
+ALTER COLUMN "stock" SET DEFAULT 1;

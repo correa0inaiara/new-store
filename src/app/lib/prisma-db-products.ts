@@ -1,3 +1,4 @@
+import { Decimal } from "@prisma-client/internal/prismaNamespace";
 import prisma from "./prisma";
 
 export async function getProducts(query?: string) {
@@ -26,7 +27,7 @@ export async function getAllProducts() {
         subcategory: true, // Inclui os dados da subcategoria relacionada
       },
     });
-    return Response.json(products);
+    return products;
   } catch (error) {
     return Response.json({ error: 'Falha ao buscar produtos' }, { status: 500 });
   }
@@ -35,7 +36,11 @@ export async function getAllProducts() {
 export async function getProductById(product_id: string) {
     await new Promise((resolve) => setTimeout(resolve, 1500))
     return prisma.product.findUnique({
-        where: {product_id}
+        where: {product_id},
+        include: {
+          category: true,    // Inclui os dados da categoria relacionada
+          subcategory: true, // Inclui os dados da subcategoria relacionada
+        }
     })
 }
 
@@ -56,5 +61,61 @@ export async function getProductsBySubcategory(subcategory_id: string) {
         subcategory: true,
       },
       where: {subcategory_id},
+    })
+}
+
+export async function postProduct(
+    title: string,
+    description: string,
+    brand: string,
+    price: Decimal,
+    stock: number,
+    category_id: string,
+    subcategory_id: string | null
+) {
+
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    return prisma.product.create({
+        data: { 
+          title,
+          description,
+          brand,
+          price: price,
+          stock: stock,
+          category_id,
+          subcategory_id
+        }
+    })
+}
+
+export async function updateProduct(
+    product_id: string,
+    title: string,
+    description: string,
+    brand: string,
+    price: Decimal,
+    stock: number,
+    category_id: string,
+    subcategory_id: string | null
+) {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    return prisma.product.update({
+        where: { product_id },
+        data: { 
+          title,
+          description,
+          brand,
+          price: price,
+          stock: stock,
+          category_id,
+          subcategory_id
+        }
+    })
+}
+
+export async function deleteProduct(product_id: string) {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    return prisma.product.delete({
+        where: {product_id}
     })
 }

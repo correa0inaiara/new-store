@@ -41,11 +41,12 @@ model Subcategory {
 
 model Product {
   title                  String
-  price                  Decimal
   description            String
+  brand                  String                @default("")
+  price                  Decimal
+  stock                  Int                   @default(1)
   category_id            String      
   product_id             String                @id @default(uuid())
-  stock                  Int                   @default(0)
   subcategory_id         String?       
   cart_item              Cart_Item[]       
   order_item             Order_Item[]      
