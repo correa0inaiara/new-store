@@ -1,3 +1,5 @@
+import { Roles } from "./roles"
+
 export type Subcategory = {
     subcategory_id: string
     name: string
@@ -12,4 +14,9 @@ export type Category = {
     title: string
     image?: any
     hasSubcategories: boolean
+}
+
+export type UserAuth = {
+    isAuthenticated: boolean
+    role: Roles | undefined
 }
