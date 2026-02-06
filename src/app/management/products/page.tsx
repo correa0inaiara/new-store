@@ -89,10 +89,13 @@ export default function Products() {
             formData.append('category', category)
             formData.append('subcategory', subcategory)
             // formData.append('image', productImage)
-            formData.append('image_name', productImage.name)
-
+            // formData.append('image_name', productImage.name)
+            console.log('formData', formData)
             const response = await fetch('/api/products', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data'  // ← Isso quebra!
+                },
                 body: formData
             })
 
@@ -100,7 +103,7 @@ export default function Products() {
                 router.refresh()
                 atualizarLista()
                 resetForm()
-                alert("Categoria criada com sucesso!")
+                alert("Produto criado com sucesso!")
             }
         } catch (error) {
             console.error('Error: ', error)
