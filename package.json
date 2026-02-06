@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "prisma generate && next dev",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "db:seed": "prisma db seed",
-    "db:seed:clean": "node -e \"process.env.SEED_CLEAN='true'\" && prisma db seed"
+    "db:seed:clean": "node -e \"process.env.SEED_CLEAN='true'\" && prisma db seed",
+    "postinstall": "prisma generate"
   },
   "browserslist": [
     "> 1%"
