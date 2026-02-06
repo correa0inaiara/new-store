@@ -2,11 +2,13 @@ import { Category, Subcategory } from "@//types/menu"
 import Link from "next/link"
 import { getAllCategories } from "../lib/prisma-db-categories"
 import { getAllSubcategories } from "../lib/prisma-db-subcategories"
+import { CategoryResponse } from "@//types/categories"
+import { SubcategoryResponse } from "@//types/subcategories"
 
 async function getCategories() {
     try {
         const results = await getAllCategories()
-        return results
+        return results as CategoryResponse[]
     } catch (error) {
         console.log('algo deu errado com o retorno das categorias...')
     }
@@ -15,31 +17,41 @@ async function getCategories() {
 async function getSubcategories() {
   try {
     const results = await getAllSubcategories()
-    return results
+    return results as SubcategoryResponse[]
   } catch (error) {
     console.log('algo deu errado com o retorno das categorias...')
   }
 }
 
 async function criaMenu(): Promise<[Category[], Subcategory[]]> {
-    const categorias: Category[] = await getCategories()
-    const subcategorias: Subcategory[] = await getSubcategories()
+    let _categorias: Category[] = []
+    let _subcategorias: Subcategory[] = []
+    try {
+        const categorias = await getCategories() as CategoryResponse[]
+        const subcategorias = await getSubcategories() as SubcategoryResponse[]
+        _categorias = categorias as Category[]
+        _subcategorias = subcategorias as Subcategory[]
 
-    let categorias_vazias:Category[] = []
-    categorias_vazias = categorias.filter((categoria: Category) =>
-        !subcategorias.some((subcategoria: Subcategory) =>
-            subcategoria.category_id === categoria.category_id
+        let categorias_vazias = []
+        categorias_vazias = _categorias.filter((categoria: Category) =>
+            !_subcategorias.some((subcategoria: Subcategory) =>
+                subcategoria.category_id === categoria.category_id
+            )
         )
-    )
-    
-    categorias.map((categoria: Category) => {
-        if (categorias_vazias.includes(categoria)) {
-            categoria.hasSubcategories = false
-        }
-        categoria.hasSubcategories = true
-    })
+        
+        _categorias.map((categoria: CategoryResponse) => {
+            const _categoria = categoria as Category
+            if (categorias_vazias.includes(_categoria)) {
+                _categoria.hasSubcategories = false
+            }
+            _categoria.hasSubcategories = true
+        })
 
-    return [categorias, subcategorias]
+    } catch (error) {
+        console.error('Algo deu errado ao carregar as categorias e subcategorias')
+    }
+
+    return [_categorias, _subcategorias]
 }
 
 export const Menu = async () => {

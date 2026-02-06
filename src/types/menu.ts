@@ -10,6 +10,6 @@ export type Category = {
     category_id: string
     name: string
     title: string
-    image: any
+    image?: any
     hasSubcategories: boolean
 }

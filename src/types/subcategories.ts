@@ -1,4 +1,4 @@
-import { BreadcrumbCategoria, Category, CategoryType } from "./categories";
+import { BreadcrumbCategoria, Category, CategoryResponse, CategoryType } from "./categories";
 import { Products } from "./products";
 
 export type SubcategoryResponse = {
@@ -6,6 +6,7 @@ export type SubcategoryResponse = {
   title: string
   subcategory_id: string
   category_id: string
+  category: CategoryResponse
 }
 
 export type SubcategoryType = {

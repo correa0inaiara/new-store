@@ -1,6 +1,8 @@
+import { CategoryResponse } from "@//types/categories";
 import prisma from "./prisma";
+import Error from "next/error";
 
-export async function getAllCategories() {
+export async function getAllCategories(): Promise<CategoryResponse[] | Response> {
   try {
     const categories = await prisma.category.findMany()
     return categories
