@@ -2,6 +2,8 @@
 import { Prisma } from "@prisma/client/scripts/default-index.js";
 import prisma from "./prisma";
 import { Decimal } from "@prisma/client/runtime/client";
+import { Product } from "@prisma-client/client";
+import { Products } from "@//types/products";
 
 export async function getProducts(query?: string) {
   console.log("query", query)
@@ -73,7 +75,7 @@ export async function postProduct(
     price: Decimal,
     stock: number,
     category_id: string,
-    subcategory_id: string | null
+    subcategory_id: string
 ) {
 
     await new Promise((resolve) => setTimeout(resolve, 1500))
@@ -98,7 +100,7 @@ export async function updateProduct(
     price: Decimal,
     stock: number,
     category_id: string,
-    subcategory_id: string | null
+    subcategory_id: string
 ) {
     await new Promise((resolve) => setTimeout(resolve, 1500))
     return prisma.product.update({

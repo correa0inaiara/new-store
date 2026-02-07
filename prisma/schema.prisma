@@ -47,11 +47,11 @@ model Product {
   stock                  Int                   @default(1)
   category_id            String      
   product_id             String                @id @default(uuid())
-  subcategory_id         String?       
+  subcategory_id         String       
   cart_item              Cart_Item[]       
   order_item             Order_Item[]      
   category               Category              @relation(fields: [category_id], references: [category_id])
-  subcategory            Subcategory?          @relation(fields: [subcategory_id], references: [subcategory_id])
+  subcategory            Subcategory           @relation(fields: [subcategory_id], references: [subcategory_id])
 }
 
 model Address {

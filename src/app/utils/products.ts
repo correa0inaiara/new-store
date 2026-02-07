@@ -1,13 +1,13 @@
 import { AgregacaoPorCategoria, ContagemPorCategoria } from '@//types/categories'
 import { StaticImageData } from 'next/image'
-import { Products } from '@//types/products'
+import { ProductResponse, Products } from '@//types/products'
 import { getAllProducts, getProductsByCategory, getProductsBySubcategory } from '../lib/prisma-db-products'
 import { AgregacaoPorSubcategoria, ContagemPorSubcategoria } from '@//types/subcategories'
 
-async function getProducts(): Promise<Products> {
+async function getProducts() {
     try {
         const results = await getAllProducts()
-        return results as Products
+        return results
     } catch (error) {
         console.log('algo deu errado com o retorno das categorias...')
         return []
@@ -78,7 +78,7 @@ function filterProductsBySubcategory(products: Products) {
     return {produtosPorSubcategoria, contagemPorSubcategoria}
 }
 
-function mapProducts(products: Products) {
+function mapProducts(products: ProductResponse[]) {
 
     let myImageData: StaticImageData = {
         src: '/sneakers.webp',
@@ -90,7 +90,8 @@ function mapProducts(products: Products) {
 
     return products.map(product => ({
         ...product,
-        image: product.image || myImageData
+        image: product.image || myImageData,
+        price: typeof product.price === 'number' ? product.price : parseFloat(product.price.toString())
     }))
 }
 

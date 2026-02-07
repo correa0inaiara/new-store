@@ -6,7 +6,6 @@ export type SubcategoryResponse = {
   title: string
   subcategory_id: string
   category_id: string
-  category: CategoryResponse
 }
 
 export type SubcategoryType = {

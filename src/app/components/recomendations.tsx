@@ -1,12 +1,12 @@
 'use client'
 
 import Image from "next/image"
-import { Products } from "@//types/products";
+import { ProductResponse, Products } from "@//types/products";
 import produto_quebrado from './../../../public/produto-quebrado.png'
 import React from "react";
 import Slider from "react-slick";
 
-export const Recomendations = ({ products }: { products: Products }) => {
+export const Recomendations = ({ products }: { products: ProductResponse[] }) => {
     var settings = {
         dots: true,
         infinite: false,
@@ -55,8 +55,8 @@ export const Recomendations = ({ products }: { products: Products }) => {
                             <div className="m-auto w-50">
                                 <figure className="relative w-full h-full">
                                     <Image
-                                        src={product.image.src ?? produto_quebrado}
-                                        alt={product.image.alt ?? 'product'}
+                                        src={product?.image?.src ?? produto_quebrado}
+                                        alt={product?.image?.alt ?? 'product'}
                                         width={300}
                                         height={180}
                                         className="rounded-xl"
@@ -70,7 +70,7 @@ export const Recomendations = ({ products }: { products: Products }) => {
                                 </h2>
                                 <p>{product.description}</p>
                                 <div className="card-actions items-center justify-center gap-2">
-                                    <span className="text-xl font-bold">${product.price}</span>
+                                    <span className="text-xl font-bold">${parseFloat(product.price.toString())}</span>
                                     <button className="btn btn-primary btn-sm">Buy Now</button>
                                 </div>
                                 <div className="card-actions justify-center gap-2">
