@@ -1,5 +1,6 @@
 'use client'
 
+import { Category } from '@//types/menu'
 import { ProductResponse } from '@//types/products'
 import { Delete02Icon, PencilEdit02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -23,11 +24,15 @@ export default function Products() {
 
     const router = useRouter()
     const [products, setProducts] = useState<Record<string, any>[]>([])
+  const [subcategories, setSubcategories] = useState<Record<string, any>[]>([])
+  const [allSubcategories, setAllSubcategories] = useState<Record<string, any>[]>([])
+  const [categories, setCategories] = useState<Record<string, any>[]>([])
 
     let index = 0
 
     useEffect(() => {
         loadProducts()
+        loadCategories()
     }, [])
 
     useEffect(() => {
@@ -60,13 +65,45 @@ export default function Products() {
         await loadProducts()
     }
 
+    const loadCategories = async () => {
+        const response = await fetch('/api/categories', {
+        method: 'GET'
+        })
+
+        const data: Record<string, any>[] = await response.json();
+        loadSubcategories(data[0].category_id)
+        setCategories(data)
+    }
+
+    const loadSubcategories = async (category_id: string) => {
+        const response = await fetch('/api/subcategories', {
+        method: 'GET'
+        })
+
+        const data: Record<string, any>[] = await response.json();
+        setAllSubcategories(data)
+        setSubcategories(groupSubcategories(data, category_id))
+    }
+
     const loadProducts = async () => {
         const response = await fetch('/api/products', {
             method: 'GET'
         })
 
         const data: Record<string, any>[] = await response.json();
+        console.log(data)
         setProducts(data)
+    }
+
+    const groupSubcategories = (subcategories: Record<string, any>[], category_id: string) => {
+        return subcategories.filter(subcategory => subcategory.category_id === category_id)
+    }
+
+    const handleOnSelectCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setCategory(e.target.value)
+        setSubcategories(groupSubcategories(allSubcategories, e.target.value))
+        console.log(subcategories)
+        console.log(allSubcategories)
     }
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -86,16 +123,13 @@ export default function Products() {
             formData.append('price', price)
             formData.append('brand', brand)
             formData.append('stock', stock)
-            formData.append('category', category)
-            formData.append('subcategory', subcategory)
+            formData.append('category_id', category)
+            formData.append('subcategory_id', subcategory)
             // formData.append('image', productImage)
             // formData.append('image_name', productImage.name)
             console.log('formData', formData)
             const response = await fetch('/api/products', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data'  // ← Isso quebra!
-                },
                 body: formData
             })
 
@@ -126,8 +160,8 @@ export default function Products() {
             formData.append('price', price)
             formData.append('brand', brand)
             formData.append('stock', stock)
-            formData.append('category', category)
-            formData.append('subcategory', subcategory)
+            formData.append('category_id', category)
+            formData.append('subcategory_id', subcategory)
             // formData.append('image', productImage)
             formData.append('image_name', productImage.name)
 
@@ -140,7 +174,7 @@ export default function Products() {
                 router.refresh()
                 atualizarLista()
                 resetForm()
-                alert("Categoria editada com sucesso!")
+                alert("Produto editada com sucesso!")
             }
         } catch (error) {
             console.error('Error: ', error)
@@ -150,18 +184,18 @@ export default function Products() {
 
     }
 
-    const handleOnDelete = async (category_id: String) => {
+    const handleOnDelete = async (product_id: String) => {
         setLoading(true)
 
         try {
-            const response = await fetch(`/api/products/${category_id}`, {
+            const response = await fetch(`/api/products/${product_id}`, {
                 method: 'DELETE'
             })
 
             if (response.ok) {
                 router.refresh()
                 atualizarLista()
-                alert("Categoria deletada com sucesso!")
+                alert("Produto deletada com sucesso!")
             }
         } catch (error) {
             console.error('Error: ', error)
@@ -206,7 +240,7 @@ export default function Products() {
             <div className="flex justify-center gap-10 mt-5">
                 <form onSubmit={handleFormSubmit}>
                     <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-                        <legend className="fieldset-legend">Category</legend>
+                        <legend className="fieldset-legend">Product</legend>
 
                         <label className="label">Title</label>
                         <input type="text" className="input" value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -221,7 +255,21 @@ export default function Products() {
                         <input type="number" step={0.01} className="input" value={price} onChange={(e) => setPrice(e.target.value)} />
 
                         <label className="label">Stock</label>
-                        <input type="number" step={1} className="input" value={price} onChange={(e) => setPrice(e.target.value)} />
+                        <input type="number" step={1} className="input" value={stock} onChange={(e) => setStock(e.target.value)} />
+
+                        <select defaultValue="Pick a category" className="select" onChange={(e) => handleOnSelectCategory(e)}>
+                            <option disabled={true}>Category</option>
+                            {categories.map((category: any) => (
+                                <option key={category.category_id} value={category.category_id}>{category.title}</option>
+                            ))}
+                        </select>
+                        
+                        <select defaultValue="Pick a subcategory" className="select" onChange={(e) => setSubcategory(e.target.value)}>
+                            <option disabled={true}>Subcategory</option>
+                            {subcategories.map((subcategory: any) => (
+                                <option key={subcategory.subcategory_id} value={subcategory.subcategory_id}>{subcategory.title}</option>
+                            ))}
+                        </select>
 
                         <fieldset className="fieldset">
                             <legend className="fieldset-legend">Product's Image</legend>
@@ -295,23 +343,23 @@ export default function Products() {
                     </thead>
                     <tbody>
                         {products.map((result: Record<string, any>, index: number) => (
-                            <tr key={result.category_id} className="hover:bg-base-300">
+                            <tr key={result.product_id} className="hover:bg-base-300">
                                 <th>{index + 1}</th>
                                 <td>{result.title}</td>
                                 <td>{result.description}</td>
                                 <td>{result.brand}</td>
                                 <td>{result.price}</td>
                                 <td>{result.stock}</td>
-                                <td>{result.category}</td>
-                                <td>{result.subcategory}</td>
+                                <td>{result.category.title}</td>
+                                <td>{result.subcategory.title}</td>
                                 <td>
                                     <button
-                                        onClick={() => handleOnDelete(result.category_id)}
+                                        onClick={() => handleOnDelete(result.product_id)}
                                         className="btn">
                                         <HugeiconsIcon icon={Delete02Icon} size={24} />
                                     </button>
                                     <button
-                                        onClick={() => handleOnEdit(result.category_id)}
+                                        onClick={() => handleOnEdit(result.product_id)}
                                         className="btn">
                                         <HugeiconsIcon icon={PencilEdit02Icon} size={24} />
                                     </button>

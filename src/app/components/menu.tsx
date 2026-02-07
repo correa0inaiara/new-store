@@ -145,7 +145,7 @@ export const Menu = async () => {
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link href="/management/categories">
+                                        <Link href="/management/products">
                                             Manage Products
                                         </Link>
                                     </li>

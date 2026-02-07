@@ -11,9 +11,10 @@ export async function GET(request: NextRequest) {
     }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
     console.log('/api/products post', request)
   const formData = await request.formData()
+  console.log('formData', formData)
   
   const title = formData.get('title') as string
   const description = formData.get('description') as string
