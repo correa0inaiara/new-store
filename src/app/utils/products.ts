@@ -4,12 +4,13 @@ import { Products } from '@//types/products'
 import { getAllProducts, getProductsByCategory, getProductsBySubcategory } from '../lib/prisma-db-products'
 import { AgregacaoPorSubcategoria, ContagemPorSubcategoria } from '@//types/subcategories'
 
-async function getProducts() {
+async function getProducts(): Promise<Products> {
     try {
         const results = await getAllProducts()
-        return results.json()
+        return results as Products
     } catch (error) {
         console.log('algo deu errado com o retorno das categorias...')
+        return []
     }
 }
 
@@ -85,21 +86,12 @@ function mapProducts(products: Products) {
         height: 180
     };
     
-    products.forEach(product => {
+    console.log("products", products)
 
-        product.image = { ...myImageData, alt: 'Shoes' }
-        // product.brand = 'Runners'
-        // product.category = CategoryEnum.FASHION
-        // product.subcategory = SubcategoryEnum.FITNESS
-        // product.description = 'Calçados esportivos'
-        // product.stock = 50.0
-        // product.price = 150.00
-        // product.title = 'Calçados Esportivos Runner Verde Limão'
-    })
-
-    console.log('forEach products', products)
-    // debugger
-    return products
+    return products.map(product => ({
+        ...product,
+        image: product.image || myImageData
+    }))
 }
 
 export {

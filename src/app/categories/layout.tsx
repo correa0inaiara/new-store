@@ -8,15 +8,17 @@ export default async function AuthLayout({
 }: {
     children: React.ReactNode
 }) {
-    let products: Products = await getProducts()
-    console.log("products", products)
-    products = mapProducts(products)
+    // let products: Products
+    const products: Products = await getProducts()
+    const mappedProducts = mapProducts(products)
 
     return (
         <div>
             <Breadcrumbs />
             {children}
-            <Recomendations products={products} />
+            {mappedProducts && mappedProducts.length > 0 && (
+                <Recomendations products={mappedProducts} />
+            )}
         </div>
     )
 }

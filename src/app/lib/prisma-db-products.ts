@@ -31,7 +31,7 @@ export async function getAllProducts() {
     });
     return products;
   } catch (error) {
-    return Response.json({ error: 'Falha ao buscar produtos' }, { status: 500 });
+    throw error
   }
 }
 

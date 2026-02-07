@@ -3,7 +3,7 @@ import { Category, Subcategory } from "./menu"
 
 export type Product = {
     product_id: string
-    image: Banner
+    image?: Banner
     title: string
     description: string
     price: number
