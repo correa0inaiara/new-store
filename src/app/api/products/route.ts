@@ -21,6 +21,7 @@ export async function POST(request: Request) {
   const brand = formData.get('brand') as string
   const price = formData.get('price') as string
   const stock = formData.get('stock') as string
+  const sku = formData.get('sku') as string
   const category_id = formData.get('category_id') as string
   const subcategory_id = formData.get('subcategory_id') as string
   // const imageFile = formData.get('image') as File
@@ -30,7 +31,7 @@ export async function POST(request: Request) {
   // const bytes = await imageFile.arrayBuffer()
 
   // Chame sua função postProduct passando o buffer
-  const product = await postProduct(title, description, brand, new Decimal(price), parseInt(stock), category_id, subcategory_id)
+  const product = await postProduct(title, description, brand, new Decimal(price), parseInt(stock), sku, category_id, subcategory_id)
   
   return new Response(JSON.stringify({ success: true }), { status: 201 })
 }

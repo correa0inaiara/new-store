@@ -74,6 +74,7 @@ export async function postProduct(
     brand: string,
     price: Decimal,
     stock: number,
+    sku: string,
     category_id: string,
     subcategory_id: string
 ) {
@@ -86,6 +87,7 @@ export async function postProduct(
           brand,
           price: price,
           stock: stock,
+          sku,
           category_id,
           subcategory_id
         }
