@@ -4,230 +4,91 @@ import { Prisma } from "../generated/client";
 export interface SeedDependencies {
   categories: Prisma.CategoryGetPayload<{}>[];
   subcategories: Prisma.SubcategoryGetPayload<{}>[];
+  properties: Prisma.PropertyGetPayload<{ include: { property_option: true } }>[];
 }
 
 export async function seedProducts(deps: SeedDependencies): Promise<number> {
-  console.log('🌱 Seeding products...');
+  console.log('🌱 Seeding products with properties...');
   
-  const { categories, subcategories } = deps;
+  const { categories, subcategories, properties } = deps;
 
-  // Mapear subcategorias por nome para fácil acesso
   const subcategoryMap: Record<string, string> = {};
   for (const subcat of subcategories) {
     subcategoryMap[subcat.name] = subcat.subcategory_id;
   }
 
-  // 3. Criar Produtos diversificados
+  // Função auxiliar para pegar ID de opção de propriedade
+  const getOptionId = (propName: string, value: string) => {
+    const prop = properties.find(p => p.name === propName);
+    return prop?.property_option.find(o => o.option.toLowerCase() === value.toLowerCase())?.property_options_id;
+  };
+
   const productsData = [
-    // Smartphones
-    {
-      title: 'Smartphone Galaxy S24',
-      price: new Prisma.Decimal('3999.99'),
-      description: 'Smartphone flagship com câmera de 200MP e IA integrada',
-      stock: 50,
-      category_id: categories[0].category_id,
-      subcategory_id: subcategoryMap['smartphones'],
-    },
-    {
-      title: 'iPhone 15 Pro',
-      price: new Prisma.Decimal('7999.99'),
-      description: 'iPhone com chip A17 Pro e design em titânio',
-      stock: 30,
-      category_id: categories[0].category_id,
-      subcategory_id: subcategoryMap['smartphones'],
-    },
-    {
-      title: 'Smartphone Motorola Edge 40',
-      price: new Prisma.Decimal('2299.99'),
-      description: 'Smartphone intermediário com tela pOLED e carregamento rápido',
-      stock: 75,
-      category_id: categories[0].category_id,
-      subcategory_id: subcategoryMap['smartphones'],
-    },
+    // Eletrônicos (Smartphones, Laptops, Audio, Games)
+    { title: 'Smartphone Galaxy S24', price: 3999.99, sub: 'smartphones', catIdx: 0, brand: 'Samsung', prop: ['cor:Preto', 'voltagem:110v'] },
+    { title: 'iPhone 15 Pro', price: 7999.99, sub: 'smartphones', catIdx: 0, brand: 'Apple', prop: ['cor:Cinza', 'voltagem:220v'] },
+    { title: 'Smartphone Motorola Edge 40', price: 2299.99, sub: 'smartphones', catIdx: 0, brand: 'Motorola', prop: ['cor:Azul'] },
+    { title: 'Notebook Dell XPS 13', price: 8999.99, sub: 'laptops', catIdx: 0, brand: 'Dell', prop: ['cor:Preto', 'voltagem:110v'] },
+    { title: 'MacBook Air M2', price: 9999.99, sub: 'laptops', catIdx: 0, brand: 'Apple', prop: ['cor:Cinza', 'voltagem:110v'] },
+    { title: 'Notebook Gamer Acer Nitro 5', price: 5499.99, sub: 'laptops', catIdx: 0, brand: 'Acer', prop: ['cor:Preto', 'voltagem:220v'] },
+    { title: 'Fone Sony WH-1000XM5', price: 2299.99, sub: 'audio', catIdx: 0, brand: 'Sony', prop: ['cor:Preto'] },
+    { title: 'JBL Charge 5', price: 899.99, sub: 'audio', catIdx: 0, brand: 'JBL', prop: ['cor:Azul'] },
+    { title: 'PlayStation 5', price: 4499.99, sub: 'gaming', catIdx: 0, brand: 'Sony', prop: ['cor:Branco', 'voltagem:110v'] },
+    { title: 'Xbox Series X', price: 4199.99, sub: 'gaming', catIdx: 0, brand: 'Microsoft', prop: ['cor:Preto', 'voltagem:110v'] },
 
-    // Notebooks
-    {
-      title: 'Notebook Dell XPS 13',
-      price: new Prisma.Decimal('8999.99'),
-      description: 'Notebook ultrafino com tela InfinityEdge e processador Intel Core i7',
-      stock: 25,
-      category_id: categories[0].category_id,
-      subcategory_id: subcategoryMap['laptops'],
-    },
-    {
-      title: 'MacBook Air M2',
-      price: new Prisma.Decimal('9999.99'),
-      description: 'Notebook Apple com chip M2 e bateria de longa duração',
-      stock: 20,
-      category_id: categories[0].category_id,
-      subcategory_id: subcategoryMap['laptops'],
-    },
-    {
-      title: 'Notebook Gamer Acer Nitro 5',
-      price: new Prisma.Decimal('5499.99'),
-      description: 'Notebook gamer com RTX 3050 e processador Intel Core i5',
-      stock: 15,
-      category_id: categories[0].category_id,
-      subcategory_id: subcategoryMap['laptops'],
-    },
+    // Eletrodomésticos
+    { title: 'Air Fryer Philco 4.5L', price: 499.99, sub: 'kitchen', catIdx: 1, brand: 'Philco', prop: ['voltagem:110v', 'volume:10l'] },
+    { title: 'Liquidificador Mondial Turbo', price: 299.99, sub: 'kitchen', catIdx: 1, brand: 'Mondial', prop: ['voltagem:220v', 'cor:Vermelho'] },
 
-    // Áudio
-    {
-      title: 'Fone de Ouvido Sony WH-1000XM5',
-      price: new Prisma.Decimal('2299.99'),
-      description: 'Fone over-ear com cancelamento de ruído líder do mercado',
-      stock: 40,
-      category_id: categories[0].category_id,
-      subcategory_id: subcategoryMap['audio'],
-    },
-    {
-      title: 'Caixa de Som JBL Charge 5',
-      price: new Prisma.Decimal('899.99'),
-      description: 'Caixa de som Bluetooth à prova d\'água com grave potente',
-      stock: 60,
-      category_id: categories[0].category_id,
-      subcategory_id: subcategoryMap['audio'],
-    },
+    // Moda (Mens, Womens, Shoes)
+    { title: 'Camisa Social Slim Fit', price: 199.99, sub: 'mens-clothing', catIdx: 2, brand: 'Dudalina', prop: ['tamanho:M', 'cor:Branco'] },
+    { title: 'Calça Jeans Masculina', price: 249.99, sub: 'mens-clothing', catIdx: 2, brand: 'Levi\'s', prop: ['tamanho:G', 'cor:Azul'] },
+    { title: 'Vestido Floral Midi', price: 179.99, sub: 'womens-clothing', catIdx: 2, brand: 'Zara', prop: ['tamanho:P', 'cor:Roxo'] },
+    { title: 'Blusa Feminina Básica', price: 89.99, sub: 'womens-clothing', catIdx: 2, brand: 'H&M', prop: ['tamanho:U', 'cor:Amarelo'] },
+    { title: 'Tênis Nike Air Max', price: 699.99, sub: 'shoes', catIdx: 2, brand: 'Nike', prop: ['tamanho:G', 'cor:Preto'] },
+    { title: 'Sapato Social Masculino', price: 349.99, sub: 'shoes', catIdx: 2, brand: 'Ferracini', prop: ['tamanho:M', 'cor:Preto'] },
 
-    // Cozinha
-    {
-      title: 'Air Fryer Philco 4.5L',
-      price: new Prisma.Decimal('499.99'),
-      description: 'Fritadeira elétrica sem óleo com capacidade de 4,5 litros',
-      stock: 35,
-      category_id: categories[1].category_id,
-      subcategory_id: subcategoryMap['kitchen'],
-    },
-    {
-      title: 'Liquidificador Mondial Turbo',
-      price: new Prisma.Decimal('299.99'),
-      description: 'Liquidificador com 8 velocidades e copo de vidro',
-      stock: 45,
-      category_id: categories[1].category_id,
-      subcategory_id: subcategoryMap['kitchen'],
-    },
-
-    // Roupas Masculinas
-    {
-      title: 'Camisa Social Slim Fit',
-      price: new Prisma.Decimal('199.99'),
-      description: 'Camisa social masculina slim fit em algodão 100%',
-      stock: 100,
-      category_id: categories[2].category_id,
-      subcategory_id: subcategoryMap['mens-clothing'],
-    },
-    {
-      title: 'Calça Jeans Masculina',
-      price: new Prisma.Decimal('249.99'),
-      description: 'Calça jeans masculina no corte skinny',
-      stock: 80,
-      category_id: categories[2].category_id,
-      subcategory_id: subcategoryMap['mens-clothing'],
-    },
-
-    // Roupas Femininas
-    {
-      title: 'Vestido Floral Midi',
-      price: new Prisma.Decimal('179.99'),
-      description: 'Vestido floral feminino midi com tecido leve',
-      stock: 65,
-      category_id: categories[2].category_id,
-      subcategory_id: subcategoryMap['womens-clothing'],
-    },
-    {
-      title: 'Blusa Feminina Básica',
-      price: new Prisma.Decimal('89.99'),
-      description: 'Blusa feminina básica em algodão com várias cores',
-      stock: 120,
-      category_id: categories[2].category_id,
-      subcategory_id: subcategoryMap['womens-clothing'],
-    },
-
-    // Calçados
-    {
-      title: 'Tênis Nike Air Max',
-      price: new Prisma.Decimal('699.99'),
-      description: 'Tênis esportivo com tecnologia Air Max de amortecimento',
-      stock: 55,
-      category_id: categories[2].category_id,
-      subcategory_id: subcategoryMap['shoes'],
-    },
-    {
-      title: 'Sapato Social Masculino',
-      price: new Prisma.Decimal('349.99'),
-      description: 'Sapato social masculino em couro legítimo',
-      stock: 40,
-      category_id: categories[2].category_id,
-      subcategory_id: subcategoryMap['shoes'],
-    },
-
-    // Fitness
-    {
-      title: 'Esteira Elétrica Pro',
-      price: new Prisma.Decimal('2999.99'),
-      description: 'Esteira elétrica com motor 3.0HP e sistema de amortecimento',
-      stock: 10,
-      category_id: categories[3].category_id,
-      subcategory_id: subcategoryMap['fitness'],
-    },
-    {
-      title: 'Kit Halteres Ajustáveis',
-      price: new Prisma.Decimal('499.99'),
-      description: 'Kit de halteres ajustáveis de 10kg a 40kg',
-      stock: 25,
-      category_id: categories[3].category_id,
-      subcategory_id: subcategoryMap['fitness'],
-    },
+    // Esportes / Fitness
+    { title: 'Esteira Elétrica Pro', price: 2999.99, sub: 'fitness', catIdx: 3, brand: 'Movement', prop: ['voltagem:220v', 'peso:30kg'] },
+    { title: 'Kit Halteres Ajustáveis', price: 499.99, sub: 'fitness', catIdx: 3, brand: 'Iron', prop: ['peso:20kg'] },
 
     // Livros
-    {
-      title: 'O Poder do Hábito',
-      price: new Prisma.Decimal('49.99'),
-      description: 'Best-seller sobre como transformar hábitos na vida e nos negócios',
-      stock: 85,
-      category_id: categories[4].category_id,
-      subcategory_id: subcategoryMap['books'],
-    },
-    {
-      title: 'Box Harry Potter Completo',
-      price: new Prisma.Decimal('299.99'),
-      description: 'Coleção completa dos 7 livros de Harry Potter em capa dura',
-      stock: 30,
-      category_id: categories[4].category_id,
-      subcategory_id: subcategoryMap['books'],
-    },
-
-    // Games
-    {
-      title: 'PlayStation 5',
-      price: new Prisma.Decimal('4499.99'),
-      description: 'Console de última geração com SSD ultrarrápido',
-      stock: 15,
-      category_id: categories[0].category_id,
-      subcategory_id: subcategoryMap['gaming'],
-    },
-    {
-      title: 'Xbox Series X',
-      price: new Prisma.Decimal('4199.99'),
-      description: 'Console com processador Zen 2 e GPU RDNA 2',
-      stock: 12,
-      category_id: categories[0].category_id,
-      subcategory_id: subcategoryMap['gaming'],
-    },
+    { title: 'O Poder do Hábito', price: 49.99, sub: 'books', catIdx: 4, brand: 'Objetiva', prop: ['tamanho:U'] },
+    { title: 'Box Harry Potter', price: 299.99, sub: 'books', catIdx: 4, brand: 'Rocco', prop: ['tamanho:U', 'cor:Preto'] },
   ];
 
-  // Criar produtos em lotes menores para melhor performance
-  const batchSize = 10;
   let createdCount = 0;
-  
-  for (let i = 0; i < productsData.length; i += batchSize) {
-    const batch = productsData.slice(i, i + batchSize);
-    await prisma.product.createMany({
-      data: batch,
+
+  for (const p of productsData) {
+    const product = await prisma.product.create({
+      data: {
+        title: p.title,
+        description: `Descrição de alta qualidade para ${p.title}`,
+        price: new Prisma.Decimal(p.price.toString()),
+        stock: 50,
+        brand: p.brand,
+        sku: `SKU-${p.title.toUpperCase().replace(/\s+/g, '-')}-${Math.random().toString(36).substring(7)}`,
+        category_id: categories[p.catIdx].category_id,
+        subcategory_id: subcategoryMap[p.sub],
+      }
     });
-    createdCount += batch.length;
+
+    // Vincular propriedades
+    for (const propStr of p.prop) {
+      const [name, value] = propStr.split(':');
+      const propId = properties.find(pr => pr.name === name)?.property_id;
+      if (propId) {
+        await prisma.product_Properties.create({
+          data: {
+            product_id: product.product_id,
+            property_id: propId
+          }
+        });
+      }
+    }
+    createdCount++;
   }
 
-  console.log(`✅ Created ${createdCount} products across all categories`);
+  console.log(`✅ Created ${createdCount} products with linked properties.`);
   return createdCount;
 }

@@ -1,6 +1,6 @@
-// prisma/seed.ts
 import prisma from '@//app/lib/prisma';
 import { seedCategories, SeedCategoriesResult } from './categories';
+import { seedProperties } from './properties';
 import { seedProducts } from './products';
 
 async function main() {
@@ -10,19 +10,27 @@ async function main() {
     // 1. Limpar dados existentes (opcional - cuidado em produção!)
     // await cleanDatabase();
 
-    // 2. Seed categorias e subcategorias
+    // 2. Seed propriedades
+    const propertiesResult = await seedProperties();
+    
+    // 3. Seed categorias e subcategorias
     const categoriesResult: SeedCategoriesResult = await seedCategories();
     
-    // 3. Seed produtos (depende das categorias)
-    const productsCount = await seedProducts(categoriesResult);
+    // 4. Seed produtos (depende das categorias e propriedades)
+    const productsCount = await seedProducts({
+      categories: categoriesResult.categories,
+      subcategories: categoriesResult.subcategories,
+      properties: propertiesResult.properties
+    });
     
-    // 4. Seed usuários
+    // 5. Seed usuários
     // const usersCount = await seedUsers();
 
     console.log('🎉 Seed completed successfully!');
     console.log(`📊 Summary:`);
     console.log(`   - Categories: ${categoriesResult.categories.length}`);
     console.log(`   - Subcategories: ${categoriesResult.subcategories.length}`);
+    console.log(`   - Properties: ${propertiesResult.properties.length}`);
     console.log(`   - Products: ${productsCount}`);
     // console.log(`   - Users: ${usersCount}`);
     
@@ -41,6 +49,9 @@ async function cleanDatabase() {
   await prisma.order.deleteMany();
   await prisma.cart_Item.deleteMany();
   await prisma.cart.deleteMany();
+  await prisma.product_Properties.deleteMany();
+  await prisma.property_Options.deleteMany();
+  await prisma.property.deleteMany();
   await prisma.address.deleteMany();
   await prisma.user.deleteMany();
   await prisma.product.deleteMany();

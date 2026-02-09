@@ -31,27 +31,52 @@ model Category {
 }
 
 model Subcategory {
+  subcategory_id         String                @id @default(uuid())
   name                   String                @unique
   title                  String
   category_id            String            
-  subcategory_id         String                @id @default(uuid())
   product                Product[]             
   category               Category              @relation(fields: [category_id], references: [category_id])
 }
 
 model Product {
+  product_id             String                @id @default(uuid())
   title                  String
   description            String
   brand                  String                @default("")
   price                  Decimal
   stock                  Int                   @default(1)
+  sku                    String                @unique
   category_id            String      
-  product_id             String                @id @default(uuid())
   subcategory_id         String       
   cart_item              Cart_Item[]       
   order_item             Order_Item[]      
   category               Category              @relation(fields: [category_id], references: [category_id])
   subcategory            Subcategory           @relation(fields: [subcategory_id], references: [subcategory_id])
+  product_properties     Product_Properties[]
+}
+
+model Product_Properties {
+  product_properties_id  String                @id @default(uuid())
+  product_id             String
+  property_id            String
+  product                Product               @relation(fields: [product_id], references: [product_id])
+  property               Property              @relation(fields: [property_id], references: [property_id])
+}
+
+model Property {
+  property_id            String                @id @default(uuid())
+  name                   String
+  property_option        Property_Options[]
+  product_properties     Product_Properties[]
+}
+
+model Property_Options {
+  property_options_id    String                @id @default(uuid())
+  option                 String
+  sku                    String                @unique
+  property_id            String
+  property               Property              @relation(fields: [property_id], references: [property_id])
 }
 
 model Address {
