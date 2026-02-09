@@ -123,30 +123,30 @@ export const Menu = async () => {
                         </summary>
                         <li>
                             <Link href="/user-profile">
-                                Manage Account
+                                Account
                             </Link>
                         </li>
                         <li>
                             <details>
                                 <summary>
                                     <Link href="/management">
-                                        Manage Website
+                                        Admin
                                     </Link>
                                 </summary>
                                 <ul>
                                     <li>
                                         <Link href="/management/categories">
-                                            Manage Categories
+                                            Categories
                                         </Link>
                                     </li>
                                     <li>
                                         <Link href="/management/subcategories">
-                                            Manage Subcategories
+                                            Subcategories
                                         </Link>
                                     </li>
                                     <li>
                                         <Link href="/management/products">
-                                            Manage Products
+                                            Products
                                         </Link>
                                     </li>
                                 </ul>

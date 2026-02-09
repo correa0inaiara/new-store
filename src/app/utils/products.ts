@@ -95,11 +95,24 @@ function mapProducts(products: ProductResponse[]) {
     }))
 }
 
+function mapProduct(product: ProductResponse) {
+    let myImageData: StaticImageData = {
+        src: '/sneakers.webp',
+        width: 300,
+        height: 180
+    };
+    product.image = product.image || myImageData,
+    product.price = typeof product.price === 'number' ? product.price : parseFloat(product.price.toString())
+
+    return product
+}
+
 export {
     getProducts,
     getAllProductsByCategory,
     getAllProductsBySubcategory,
     filterProductsByCategory,
     filterProductsBySubcategory,
-    mapProducts
+    mapProducts,
+    mapProduct
 }
