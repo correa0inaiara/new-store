@@ -5,31 +5,13 @@ import { getAllSubcategories } from "../lib/prisma-db-subcategories"
 import { CategoryResponse } from "@//types/categories"
 import { SubcategoryResponse } from "@//types/subcategories"
 import { getUserAuth } from "../utils/menu"
+import { CacheData } from "../utils/cache"
 
-async function getCategories() {
-    try {
-        const results = await getAllCategories()
-        return results as CategoryResponse[]
-    } catch (error) {
-        console.log('algo deu errado com o retorno das categorias...')
-    }
-}
 
-async function getSubcategories() {
-    try {
-        const results = await getAllSubcategories()
-        return results as SubcategoryResponse[]
-    } catch (error) {
-        console.log('algo deu errado com o retorno das categorias...')
-    }
-}
-
-async function criaMenu(): Promise<[Category[], Subcategory[]]> {
+async function criaMenu({categorias, subcategorias}: MenuProps<[]>): Promise<[Category[], Subcategory[]]> {
     let _categorias: Category[] = []
     let _subcategorias: Subcategory[] = []
     try {
-        const categorias = await getCategories() as CategoryResponse[]
-        const subcategorias = await getSubcategories() as SubcategoryResponse[]
         _categorias = categorias as Category[]
         _subcategorias = subcategorias as Subcategory[]
 
@@ -106,11 +88,16 @@ autenticado
 
 */
 
-export const Menu = async () => {
+type MenuProps<T> = {
+    categorias: CategoryResponse[] | CacheData<T>
+    subcategorias: SubcategoryResponse[] | CacheData<T>
+}
+
+export const Menu = async (props: MenuProps<[]>) => {
     const userAuth = await getUserAuth() as UserAuth
     const usuarioVendedor = userAuth?.role === 'seller'
 
-    const [categorias, subcategorias] = await criaMenu()
+    const [categorias, subcategorias] = await criaMenu({categorias: props.categorias, subcategorias: props.subcategorias})
     return (
         <>
             {usuarioVendedor && (

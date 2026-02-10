@@ -1,13 +1,17 @@
+import { unstable_cache } from "next/cache";
 import prisma from "./prisma";
+
+const getSubcategoriesFromDb = unstable_cache(
+  async () => {
+    return await prisma.subcategory.findMany()
+  },
+  ['subcategories'],
+  { revalidate: 3600, tags: ['subcategories'] }
+)
 
 export async function getAllSubcategories() {
   try {
-    const subcategories = await prisma.subcategory.findMany({
-      include: {
-        category: true
-      }
-    })
-    return subcategories
+    return getSubcategoriesFromDb()
   } catch (error) {
     return Response.json({ error: 'Falha ao buscar subcategorias' }, { status: 500 });
   }

@@ -2,6 +2,7 @@ import { ProductResponse, Products } from "@//types/products"
 import { Breadcrumbs } from "../components/breadcrumbs"
 import { Recomendations } from "../components/recomendations"
 import { getProducts, mapProducts } from "../utils/products"
+import Banner from "../components/banner"
 
 export default async function AuthLayout({
     children,
@@ -16,6 +17,7 @@ export default async function AuthLayout({
         <div>
             <Breadcrumbs />
             {children}
+            <Banner />
             {mappedProducts && mappedProducts.length > 0 && (
                 <Recomendations products={mappedProducts} />
             )}

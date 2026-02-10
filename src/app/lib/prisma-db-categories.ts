@@ -1,11 +1,18 @@
 import { CategoryResponse } from "@//types/categories";
 import prisma from "./prisma";
-import Error from "next/error";
+import { unstable_cache } from "next/cache";
+
+const getCategoriesFromDb = unstable_cache(
+  async () => {
+    return await prisma.category.findMany()
+  },
+  ['categories'],
+  { revalidate: 3600, tags: ['categories'] }
+)
 
 export async function getAllCategories(): Promise<CategoryResponse[] | Response> {
   try {
-    const categories = await prisma.category.findMany()
-    return categories
+    return getCategoriesFromDb()
   } catch (error) {
     return Response.json({ error: 'Falha ao buscar categorias' }, { status: 500 });
   }
