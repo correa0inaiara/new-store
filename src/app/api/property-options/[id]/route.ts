@@ -28,6 +28,7 @@ export async function PATCH(
         const formData = await request.formData()
         const { id } = await params
         const propertyOption = await getPropertyOptionById(id);
+        console.log('propertyOption', propertyOption)
 
         if (!propertyOption) {
             return NextResponse.json({ error: "Property Option Not Found" }, { status: 404 });

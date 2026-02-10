@@ -7,13 +7,13 @@ export async function GET(
 ) {
     try {
         const { id } = await params
-        const property_options = await getPropertyOptionsByPropertyId(id);
+        const property = await getPropertyById(id);
 
-        if (!property_options) {
-            return NextResponse.json({ error: "Property options Not Found" }, { status: 404 });
+        if (!property) {
+            return NextResponse.json({ error: "Property Not Found" }, { status: 404 });
         }
 
-        return NextResponse.json(property_options);
+        return NextResponse.json(property);
     } catch (error) {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }

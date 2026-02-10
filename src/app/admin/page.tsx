@@ -2,7 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import Link from 'next/link'
 import React from 'react'
 
-export default async function Management() {
+export default async function Admin() {
 
     // const { sessionClaims } = await auth()
 
@@ -13,16 +13,22 @@ export default async function Management() {
     return (
         <ul>
             <li>
-                <Link href="/management">Management</Link>
+                <Link href="/admin">Admin</Link>
             </li>
             <li>
-                <Link href="/management/categories">Categories</Link>
+                <Link href="/admin/categories">Categories</Link>
             </li>
             <li>
-                <Link href="/management/subcategories">Subcategories</Link>
+                <Link href="/admin/subcategories">Subcategories</Link>
             </li>
             <li>
-                <Link href="/management/products">Products</Link>
+                <Link href="/admin/products">Products</Link>
+            </li>
+            <li>
+                <Link href="/admin/properties">Properties</Link>
+            </li>
+            <li>
+                <Link href="/admin/property-options">Property Options</Link>
             </li>
             <li>
                 <Link href="/dashboard">Voltar</Link>

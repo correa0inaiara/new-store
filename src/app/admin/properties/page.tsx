@@ -133,11 +133,11 @@ export default function Properties() {
         }
     }
 
-    const handleOnEdit = async (product_id: String) => {
+    const handleOnEdit = async (property_id: String) => {
         setLoading(true)
 
         try {
-            const response = await fetch(`/api/properties/${product_id}`, {
+            const response = await fetch(`/api/properties/${property_id}`, {
                 method: 'GET'
             })
 
@@ -213,7 +213,7 @@ export default function Properties() {
                     </thead>
                     <tbody>
                         {properties.map((result: Record<string, any>, index: number) => (
-                            <tr key={result.product_id} className="hover:bg-base-300">
+                            <tr key={result.property_id} className="hover:bg-base-300">
                                 <th>{index + 1}</th>
                                 <td>{result.name}</td>
                                 <td>

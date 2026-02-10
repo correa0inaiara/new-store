@@ -2,7 +2,11 @@ import prisma from "./prisma";
 
 export async function getPropertyOptions() {
   try {
-    const property_options = await prisma.property_Options.findMany({});
+    const property_options = await prisma.property_Options.findMany({
+      include: {
+        property: true
+      }
+    });
     return property_options;
   } catch (error) {
     throw error

@@ -129,24 +129,34 @@ export const Menu = async () => {
                         <li>
                             <details>
                                 <summary>
-                                    <Link href="/management">
+                                    <Link href="/admin">
                                         Admin
                                     </Link>
                                 </summary>
                                 <ul>
                                     <li>
-                                        <Link href="/management/categories">
+                                        <Link href="/admin/categories">
                                             Categories
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link href="/management/subcategories">
+                                        <Link href="/admin/subcategories">
                                             Subcategories
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link href="/management/products">
+                                        <Link href="/admin/products">
                                             Products
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/admin/properties">
+                                            Properties
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/admin/property-options">
+                                            Property Options
                                         </Link>
                                     </li>
                                 </ul>
