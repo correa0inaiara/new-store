@@ -21,7 +21,7 @@ export default async function Categories() {
     ]
 
     let products: Products = await getProducts()
-    console.log("products", products)
+    console.log("products Categories page", products)
     products = mapProducts(products)
 
     const { produtosPorCategoria, contagemPorCategoria } = filterProductsByCategory(products)

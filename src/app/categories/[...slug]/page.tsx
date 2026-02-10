@@ -1,9 +1,15 @@
-export default async function CategoryPage({
-    params,
-}: {
-    params: Promise<{slug: string[]}>
-}) {
-    const {slug} = await params
+'use client'
+
+import { useCategory } from "./CategoryContext"
+
+/**
+ * filtros
+ * campo de busca
+ * lista de produtos
+ * paginação
+ */
+export default function CategoryPage() {
+    const {slug, products} = useCategory()
     
     if (slug?.length === 2) {
         return (

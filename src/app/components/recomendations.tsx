@@ -7,6 +7,7 @@ import Slider from "react-slick";
 import Link from "next/link";
 
 export const Recomendations = ({ products }: { products: ProductResponse[] }) => {
+    console.log("Recomendations products", products)
     var settings = {
         dots: true,
         infinite: false,
@@ -48,9 +49,10 @@ export const Recomendations = ({ products }: { products: ProductResponse[] }) =>
     return (
 
         <main className="custom-slider">
+            <h1>Recommendations</h1>
             <div className="pt-5 pb-5 slider-container">
                 <Slider {...settings}>
-                    {products.map((product, index) => (
+                    {products && products.map((product, index) => (
                         <Link className="card bg-base-100 w-96 shadow-sm" href={`/products/${product.product_id}`}>
                             <div className="m-auto w-50">
                                 <figure className="relative w-full h-full">

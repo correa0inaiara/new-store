@@ -12,6 +12,7 @@ export type Product = {
     price: Decimal | number
     brand: string
     stock: number
+    sku: string
     category: Category
     subcategory: Subcategory
 }
@@ -24,6 +25,7 @@ export type ProductResponse = {
     price: Decimal | number
     brand: string
     stock: number
+    sku: string
     category: CategoryResponse
     subcategory: SubcategoryResponse
 }

@@ -53,6 +53,7 @@ export async function getProductsByCategory(category_id: string) {
     return prisma.product.findMany({
       include: {
         category: true,
+        subcategory: true
       },
       where: {category_id},
     })
@@ -63,6 +64,7 @@ export async function getProductsBySubcategory(subcategory_id: string) {
     return prisma.product.findMany({
       include: {
         subcategory: true,
+        category: true
       },
       where: {subcategory_id},
     })
