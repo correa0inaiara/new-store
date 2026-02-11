@@ -31,6 +31,9 @@ export default async function Admin() {
                 <Link href="/admin/property-options">Property Options</Link>
             </li>
             <li>
+                <Link href="/admin/brands">Brands</Link>
+            </li>
+            <li>
                 <Link href="/dashboard">Voltar</Link>
             </li>
         </ul>

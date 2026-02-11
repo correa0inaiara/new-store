@@ -146,6 +146,11 @@ export const Menu = async (props: MenuProps<[]>) => {
                                             Property Options
                                         </Link>
                                     </li>
+                                    <li>
+                                        <Link href="/admin/brands">
+                                            Brands
+                                        </Link>
+                                    </li>
                                 </ul>
                             </details>
                         </li>

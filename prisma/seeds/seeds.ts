@@ -1,7 +1,9 @@
+// prisma/seed.ts
 import prisma from '@//app/lib/prisma';
 import { seedCategories, SeedCategoriesResult } from './categories';
-import { seedProperties } from './properties';
 import { seedProducts } from './products';
+import { seedProperties, SeedPropertiesResult } from './properties';
+import { BrandSeedResult, seedBrands } from './brands';
 
 async function main() {
   console.log('🌱 Starting seed for multi-department store...');
@@ -10,28 +12,33 @@ async function main() {
     // 1. Limpar dados existentes (opcional - cuidado em produção!)
     // await cleanDatabase();
 
-    // 2. Seed propriedades
-    const propertiesResult = await seedProperties();
+      // 1. Seed propriedades
+    console.log('\n📌 Step 1/5: Seeding properties...');
+    const propertiesResult: SeedPropertiesResult = await seedProperties();
     
+    // 2. Seed marcas
+    console.log('\n📌 Step 2/5: Seeding brands...');
+    const brands: BrandSeedResult = await seedBrands();
+
     // 3. Seed categorias e subcategorias
     const categoriesResult: SeedCategoriesResult = await seedCategories();
     
-    // 4. Seed produtos (depende das categorias e propriedades)
+    // 4. Seed produtos
+    console.log('\n📌 Step 4/5: Seeding products...');
     const productsCount = await seedProducts({
       categories: categoriesResult.categories,
       subcategories: categoriesResult.subcategories,
-      properties: propertiesResult.properties
+      properties: propertiesResult.properties,
+      brands: brands.brands
     });
-    
-    // 5. Seed usuários
-    // const usersCount = await seedUsers();
 
-    console.log('🎉 Seed completed successfully!');
-    console.log(`📊 Summary:`);
-    console.log(`   - Categories: ${categoriesResult.categories.length}`);
-    console.log(`   - Subcategories: ${categoriesResult.subcategories.length}`);
-    console.log(`   - Properties: ${propertiesResult.properties.length}`);
-    console.log(`   - Products: ${productsCount}`);
+    console.log('\n🎉 Seed completed successfully!');
+    console.log('📊 Summary:');
+    console.log(`   ├─ Categories: ${categoriesResult.categories.length}`);
+    console.log(`   ├─ Subcategories: ${categoriesResult.subcategories.length}`);
+    console.log(`   ├─ Properties: ${propertiesResult.properties.length}`);
+    console.log(`   ├─ Brands: ${brands.brands.length}`);
+    console.log(`   └─ Products: ${productsCount}`);
     // console.log(`   - Users: ${usersCount}`);
     
   } catch (error) {

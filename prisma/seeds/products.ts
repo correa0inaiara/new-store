@@ -5,16 +5,22 @@ export interface SeedDependencies {
   categories: Prisma.CategoryGetPayload<{}>[];
   subcategories: Prisma.SubcategoryGetPayload<{}>[];
   properties: Prisma.PropertyGetPayload<{ include: { property_option: true } }>[];
+  brands: Prisma.BrandGetPayload<{}>[];
 }
 
 export async function seedProducts(deps: SeedDependencies): Promise<number> {
   console.log('🌱 Seeding products with properties...');
   
-  const { categories, subcategories, properties } = deps;
+  const { categories, subcategories, properties, brands } = deps;
 
   const subcategoryMap: Record<string, string> = {};
   for (const subcat of subcategories) {
     subcategoryMap[subcat.name] = subcat.subcategory_id;
+  }
+
+  const brandMap: Record<string, string> = {};
+  for (const brand of brands) {
+    brandMap[brand.name] = brand.brand_id
   }
 
   // Função auxiliar para pegar ID de opção de propriedade
@@ -66,8 +72,8 @@ export async function seedProducts(deps: SeedDependencies): Promise<number> {
         description: `Descrição de alta qualidade para ${p.title}`,
         price: new Prisma.Decimal(p.price.toString()),
         stock: 50,
-        brand: p.brand,
         sku: `SKU-${p.title.toUpperCase().replace(/\s+/g, '-')}-${Math.random().toString(36).substring(7)}`,
+        brand_id: brandMap[p.brand],
         category_id: categories[p.catIdx].category_id,
         subcategory_id: subcategoryMap[p.sub],
       }

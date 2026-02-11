@@ -43,17 +43,24 @@ model Product {
   product_id             String                @id @default(uuid())
   title                  String
   description            String
-  brand                  String                @default("")
   price                  Decimal
   stock                  Int                   @default(1)
   sku                    String                @unique
+  brand_id               String
   category_id            String      
   subcategory_id         String       
   cart_item              Cart_Item[]       
   order_item             Order_Item[]      
   category               Category              @relation(fields: [category_id], references: [category_id])
   subcategory            Subcategory           @relation(fields: [subcategory_id], references: [subcategory_id])
+  brand                  Brand                 @relation(fields: [brand_id], references: [brand_id])
   product_properties     Product_Properties[]
+}
+
+model Brand {
+  brand_id               String                @id @default(uuid())
+  name                   String                @unique
+  product                Product[]
 }
 
 model Product_Properties {
@@ -66,7 +73,7 @@ model Product_Properties {
 
 model Property {
   property_id            String                @id @default(uuid())
-  name                   String
+  name                   String                @unique
   property_option        Property_Options[]
   product_properties     Product_Properties[]
 }

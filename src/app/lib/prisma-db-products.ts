@@ -70,13 +70,25 @@ export async function getProductsBySubcategory(subcategory_id: string) {
     })
 }
 
+export async function getProductsByBrands(brand_id: string) {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    return prisma.product.findMany({
+      include: {
+        category: true,
+        subcategory: true,
+        brand: true
+      },
+      where: {brand_id},
+    })
+}
+
 export async function postProduct(
     title: string,
     description: string,
-    brand: string,
     price: Decimal,
     stock: number,
     sku: string,
+    brand_id: string,
     category_id: string,
     subcategory_id: string
 ) {
@@ -86,10 +98,10 @@ export async function postProduct(
         data: { 
           title,
           description,
-          brand,
           price: price,
           stock: stock,
           sku,
+          brand_id,
           category_id,
           subcategory_id
         }
@@ -100,9 +112,9 @@ export async function updateProduct(
     product_id: string,
     title: string,
     description: string,
-    brand: string,
     price: Decimal,
     stock: number,
+    brand_id: string,
     category_id: string,
     subcategory_id: string
 ) {
@@ -112,9 +124,9 @@ export async function updateProduct(
         data: { 
           title,
           description,
-          brand,
           price: price,
           stock: stock,
+          brand_id,
           category_id,
           subcategory_id
         }
