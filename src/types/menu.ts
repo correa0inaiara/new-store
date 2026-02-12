@@ -1,5 +1,10 @@
 import { Roles } from "./roles"
 
+export type Brand = {
+    brand_id: string
+    name: string
+}
+
 export type Subcategory = {
     subcategory_id: string
     name: string

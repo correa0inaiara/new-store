@@ -27,8 +27,9 @@ export async function getAllProducts() {
   try {
     const products = await prisma.product.findMany({
       include: {
-        category: true,    // Inclui os dados da categoria relacionada
-        subcategory: true, // Inclui os dados da subcategoria relacionada
+        category: true,
+        subcategory: true,
+        brand: true
       },
     });
     return products;
@@ -42,8 +43,9 @@ export async function getProductById(product_id: string) {
     return prisma.product.findUnique({
         where: {product_id},
         include: {
-          category: true,    // Inclui os dados da categoria relacionada
-          subcategory: true, // Inclui os dados da subcategoria relacionada
+          category: true,
+          subcategory: true,
+          brand: true
         }
     })
 }
@@ -53,7 +55,8 @@ export async function getProductsByCategory(category_id: string) {
     return prisma.product.findMany({
       include: {
         category: true,
-        subcategory: true
+        subcategory: true,
+        brand: true
       },
       where: {category_id},
     })
@@ -64,7 +67,8 @@ export async function getProductsBySubcategory(subcategory_id: string) {
     return prisma.product.findMany({
       include: {
         subcategory: true,
-        category: true
+        category: true,
+        brand: true
       },
       where: {subcategory_id},
     })
@@ -79,6 +83,18 @@ export async function getProductsByBrands(brand_id: string) {
         brand: true
       },
       where: {brand_id},
+    })
+}
+
+export async function getProductsMinAndMax() {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    return prisma.product.aggregate({
+      _min: {
+        price: true
+      },
+      _max: {
+        price: true
+      }
     })
 }
 

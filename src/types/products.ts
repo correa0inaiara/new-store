@@ -1,8 +1,9 @@
 import { Decimal } from "@prisma/client/runtime/client"
 import { Banner } from "./images"
-import { Category, Subcategory } from "./menu"
+import { Brand, Category, Subcategory } from "./menu"
 import { CategoryResponse } from "./categories"
 import { SubcategoryResponse } from "./subcategories"
+import { BrandResponse } from "./brands"
 
 export type Product = {
     product_id: string
@@ -10,9 +11,9 @@ export type Product = {
     title: string
     description: string
     price: Decimal | number
-    brand: string
     stock: number
     sku: string
+    brand: Brand
     category: Category
     subcategory: Subcategory
 }
@@ -23,9 +24,9 @@ export type ProductResponse = {
     title: string
     description: string
     price: Decimal | number
-    brand: string
     stock: number
     sku: string
+    brand: BrandResponse
     category: CategoryResponse
     subcategory: SubcategoryResponse
 }

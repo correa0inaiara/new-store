@@ -65,8 +65,8 @@ export default async function AuthLayout({
                 <Banner />
                 {mappedProducts && mappedProducts.length > 0 && (
                     <>
-                        <Recomendations products={mappedProducts} />
                         {children}
+                        <Recomendations products={mappedProducts} />
                     </>
                 )}
             </div>
