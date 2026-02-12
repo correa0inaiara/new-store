@@ -1,7 +1,7 @@
 'use client'
 
 import { Brand } from '@//types/menu'
-import React, { useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { useCategory } from './CategoryContext'
 import { Product, ProductResponse } from '@//types/products'
 import { getProductsMinAndMax } from '../../lib/prisma-db-products'
@@ -16,13 +16,6 @@ interface CategoryClientProps {
     maxPrice: string
 }
 
-const filterBrandsByProducts = (brands: Brand[], products: ProductResponse[] | undefined) => {
-    if (!products) return []
-    return brands.filter(brand => {
-        const filtered = products.filter(product => product.brand.brand_id === brand.brand_id)
-        return filtered.length > 0
-    })
-}
 
 /**
  * campo de busca
@@ -36,11 +29,16 @@ export default function CategoryClient({ brands, minPrice, maxPrice }: CategoryC
     const {slug, products} = useCategory()
     const [produtosFiltrados, setProdutosFiltrados] = useState<Product[]>(products as Product[])
 
-    const filteredBrands = filterBrandsByProducts(brands, products)
-    console.log('filteredBrands', filteredBrands)
-    console.log('min and max prices', minPrice, maxPrice)
+    const filteredBrands = useMemo(() => {
+        console.log('filteredBrands')
+        if (!products) return []
+        return brands.filter(brand => {
+            const filtered = products.filter(product => product.brand.brand_id === brand.brand_id)
+            return filtered.length > 0
+        })
+    }, [brands, products])
 
-    const filtraProdutosPorMarca = (marcas: BrandsObj) => {
+    const filtraProdutosPorMarca = useCallback((marcas: BrandsObj) => {
         console.log('marcas', marcas)
         if (products && products.length > 0) {
             const _products = products.filter(produto => {
@@ -49,7 +47,7 @@ export default function CategoryClient({ brands, minPrice, maxPrice }: CategoryC
             console.log('_products', _products)
             setProdutosFiltrados(_products as Product[])
         }
-    }
+    }, [products])
 
   if (slug?.length === 2) {
         return (

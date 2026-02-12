@@ -1,5 +1,5 @@
 import { Brand } from '@//types/menu'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 interface FiltrosProps {
     filteredBrands: Brand[]
@@ -13,9 +13,14 @@ export type BrandsObj = Record<string, {name: boolean, brand_id: string}>
 export default function Filtros({ filteredBrands, minPrice, maxPrice, callback }: FiltrosProps) {
     const [price, setPrice] = useState(maxPrice)
     const [brands, setBrands] = useState<BrandsObj>({})
-    const step = parseFloat(maxPrice) / 10
+    const step = useMemo(() => parseFloat(maxPrice) / 10, [maxPrice])
+    const stepMarkers = useMemo(() => Array.from({ length: 10 }, (v, k) => k), [])
+    const priceLabels = useMemo(() => {
+        const labels = Array.from({length: 8}, (v, k) => Math.floor(step * (k + 1)))
+        return [Math.floor(parseFloat(minPrice)), ...labels, Math.floor(parseFloat(maxPrice))]
+    }, [minPrice, maxPrice, step])
 
-    const toggleBrand = (brandName: string) => {
+    const toggleBrand = useCallback((brandName: string) => {
         setBrands(prev => ({
             ...prev,
             [brandName]: {
@@ -23,7 +28,7 @@ export default function Filtros({ filteredBrands, minPrice, maxPrice, callback }
                 brand_id: prev[brandName]?.brand_id
             }
         }))
-    }
+    }, [])
 
     useEffect(() => {
         callback(brands)
@@ -61,16 +66,14 @@ export default function Filtros({ filteredBrands, minPrice, maxPrice, callback }
                         className="range" 
                         step={step} />
                     <div className="flex justify-between px-2.5 mt-2 text-xs">
-                        {Array.from({ length: 10 }, (v, k) => (
+                        {stepMarkers.map((k) => (
                             <span key={k}>|</span>
                         ))}
                     </div>
                     <div className="flex justify-between px-2.5 mt-2 text-xs">
-                        <span>{Math.floor(parseFloat(minPrice))}</span>
-                        {Array.from({ length: 8 }, (v, k) => (
-                            <span key={k}>{Math.floor(step * (k + 1))}</span>
+                        {priceLabels.map((label, idx) => (
+                            <span key={idx}>{label}</span>
                         ))}
-                        <span>{Math.floor(parseFloat(maxPrice))}</span>
                     </div>
                 </div>
             </div>
