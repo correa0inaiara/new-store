@@ -17,11 +17,12 @@ export type PrecosObj = {
 export default function Filtros({ filteredBrands, minPrice, maxPrice, brandsFilterCallback, priceFilterCallback }: FiltrosProps) {
     const [price, setPrice] = useState<PrecosObj>({preco: maxPrice})
     const [brands, setBrands] = useState<BrandsObj>({})
-    const step = useMemo(() => parseFloat(maxPrice) / 10, [maxPrice])
-    const stepMarkers = useMemo(() => Array.from({ length: 10 }, (v, k) => k), [])
+    const priceRange = parseFloat(maxPrice) - parseFloat(minPrice)
+    const step = useMemo(() => priceRange / 5, [maxPrice])
+    const stepMarkers = useMemo(() => Array.from({ length: 6 }, (v, k) => k), [])
     const priceLabels = useMemo(() => {
-        const labels = Array.from({length: 8}, (v, k) => Math.floor(step * (k + 1)))
-        return [Math.floor(parseFloat(minPrice)), ...labels, Math.floor(parseFloat(maxPrice))]
+        const labels = Array.from({length: 6}, (v, k) => Math.floor(parseFloat(minPrice) + (step * k)))
+        return [...labels]
     }, [minPrice, maxPrice, step])
 
     const toggleBrand = useCallback((brandName: string) => {
@@ -70,7 +71,7 @@ export default function Filtros({ filteredBrands, minPrice, maxPrice, brandsFilt
                         type="range" 
                         min={minPrice} 
                         max={maxPrice} 
-                        defaultValue={maxPrice} 
+                        value={price.preco}
                         className="range" 
                         step={step} />
                     <div className="flex justify-between px-2.5 mt-2 text-xs">
