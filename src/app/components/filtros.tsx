@@ -5,11 +5,12 @@ interface FiltrosProps {
     filteredBrands: Brand[]
     minPrice: string
     maxPrice: string
+    callback: (args: BrandsObj) => void
 }
 
-type BrandsObj = Record<string, {name: boolean}>
+export type BrandsObj = Record<string, {name: boolean, brand_id: string}>
 
-export default function Filtros({ filteredBrands, minPrice, maxPrice }: FiltrosProps) {
+export default function Filtros({ filteredBrands, minPrice, maxPrice, callback }: FiltrosProps) {
     const [price, setPrice] = useState(maxPrice)
     const [brands, setBrands] = useState<BrandsObj>({})
     const step = parseFloat(maxPrice) / 10
@@ -18,16 +19,22 @@ export default function Filtros({ filteredBrands, minPrice, maxPrice }: FiltrosP
         setBrands(prev => ({
             ...prev,
             [brandName]: {
-                name: !prev[brandName]?.name
+                name: !prev[brandName]?.name,
+                brand_id: prev[brandName]?.brand_id
             }
         }))
     }
 
     useEffect(() => {
+        callback(brands)
+    }, [brands])
+
+    useEffect(() => {
         let brands_obj: BrandsObj = {}
         filteredBrands.forEach(brand => {
             brands_obj[brand.name] = {
-                name: false
+                name: true,
+                brand_id: brand.brand_id
             }
         })
         setBrands(brands_obj)

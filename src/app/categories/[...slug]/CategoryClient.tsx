@@ -1,11 +1,11 @@
 'use client'
 
 import { Brand } from '@//types/menu'
-import React from 'react'
+import React, { useState } from 'react'
 import { useCategory } from './CategoryContext'
 import { Product, ProductResponse } from '@//types/products'
 import { getProductsMinAndMax } from '../../lib/prisma-db-products'
-import Filtros from '../../components/filtros'
+import Filtros, { BrandsObj } from '../../components/filtros'
 import FiltroBusca from '../../components/filtroBusca'
 import ListaProdutos from '../../components/listaProdutos'
 import Paginacao from '../../components/paginacao'
@@ -34,11 +34,22 @@ const filterBrandsByProducts = (brands: Brand[], products: ProductResponse[] | u
 export default function CategoryClient({ brands, minPrice, maxPrice }: CategoryClientProps) {
 
     const {slug, products} = useCategory()
-    const _products: Product[] = products as Product[]
+    const [produtosFiltrados, setProdutosFiltrados] = useState<Product[]>(products as Product[])
 
     const filteredBrands = filterBrandsByProducts(brands, products)
     console.log('filteredBrands', filteredBrands)
     console.log('min and max prices', minPrice, maxPrice)
+
+    const filtraProdutosPorMarca = (marcas: BrandsObj) => {
+        console.log('marcas', marcas)
+        if (products && products.length > 0) {
+            const _products = products.filter(produto => {
+                return marcas[produto.brand.name]?.name
+            })
+            console.log('_products', _products)
+            setProdutosFiltrados(_products as Product[])
+        }
+    }
 
   if (slug?.length === 2) {
         return (
@@ -51,8 +62,8 @@ export default function CategoryClient({ brands, minPrice, maxPrice }: CategoryC
             <>
                 <h1>categoria {slug[0]}</h1>
                 <FiltroBusca />
-                <Filtros filteredBrands={filteredBrands} minPrice={minPrice} maxPrice={maxPrice} />
-                <ListaProdutos products={_products} />
+                <Filtros filteredBrands={filteredBrands} minPrice={minPrice} maxPrice={maxPrice} callback={filtraProdutosPorMarca} />
+                <ListaProdutos products={produtosFiltrados} />
                 <Paginacao />
             </>
         )

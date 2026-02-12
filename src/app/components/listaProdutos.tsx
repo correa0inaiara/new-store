@@ -36,8 +36,7 @@ export default function ListaProdutos({ products }: ListaProdutosProps) {
                 <button className="btn btn-primary btn-sm">Buy Now</button>
               </div>
               <div className="card-actions justify-center gap-2">
-                <div className="badge badge-outline">{product.category.title}</div>
-                <div className="badge badge-outline">{product.subcategory.title}</div>
+                <div className="badge badge-outline">{product.brand.name}</div>
               </div>
             </div>
           </Link>

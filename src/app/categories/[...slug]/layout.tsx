@@ -23,39 +23,30 @@ export default async function AuthLayout({
     // const mappedProducts = mapProducts(products)
     let mappedProducts
     if (slug) {
-        console.log('if 0')
         if (slug.length === 1) {
-            console.log('if')
             const category: CategoryResponse | null = await getCategoryByName(slug[0])
             if (category) {
                 const products: ProductResponse[] = await getProductsByCategory(category.category_id)
                 mappedProducts = mapProducts(products)
             } else {
-                console.log('else 1')
                 const products: ProductResponse[] = await getProducts()
                 mappedProducts = mapProducts(products)
             }
         } else {
-            console.log('else 2')
             const subcategory: SubcategoryResponse | null = await getSubcategoryByName(slug[1])
-            console.log('subcategory', subcategory)
             if (subcategory) {
-                console.log('if 2')
                 const products: ProductResponse[] = await getProductsBySubcategory(subcategory.subcategory_id)
                 mappedProducts = mapProducts(products)
             } else {
-                console.log('else 3')
                 const products: ProductResponse[] = await getProducts()
                 mappedProducts = mapProducts(products)
             }
         }
     } else {
-        console.log('else 4')
         const products: ProductResponse[] = await getProducts()
         mappedProducts = mapProducts(products)
     }
 
-    console.log('slug', slug)
     // console.log('mappedProducts', mappedProducts)
 
     return (
