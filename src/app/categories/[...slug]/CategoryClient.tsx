@@ -5,7 +5,7 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { useCategory } from './CategoryContext'
 import { Product, ProductResponse } from '@//types/products'
 import { getProductsMinAndMax } from '../../lib/prisma-db-products'
-import Filtros, { BrandsObj } from '../../components/filtros'
+import Filtros, { BrandsObj, PrecosObj } from '../../components/filtros'
 import FiltroBusca from '../../components/filtroBusca'
 import ListaProdutos from '../../components/listaProdutos'
 import Paginacao from '../../components/paginacao'
@@ -49,6 +49,17 @@ export default function CategoryClient({ brands, minPrice, maxPrice }: CategoryC
         }
     }, [products])
 
+    const filtrarProdutosPeloPreco = useCallback((precos: PrecosObj) => {
+        console.log('precos', precos)
+        if (products && products.length > 0) {
+            const _products = products.filter(produto => {
+                return parseFloat(produto.price.toString()) <= parseFloat(precos.preco)
+            })
+            console.log('_products', _products)
+            setProdutosFiltrados(_products as Product[])
+        }
+    }, [products])
+
   if (slug?.length === 2) {
         return (
             <h1>
@@ -60,7 +71,13 @@ export default function CategoryClient({ brands, minPrice, maxPrice }: CategoryC
             <>
                 <h1>categoria {slug[0]}</h1>
                 <FiltroBusca />
-                <Filtros filteredBrands={filteredBrands} minPrice={minPrice} maxPrice={maxPrice} callback={filtraProdutosPorMarca} />
+                <Filtros 
+                    filteredBrands={filteredBrands} 
+                    minPrice={minPrice} 
+                    maxPrice={maxPrice} 
+                    brandsFilterCallback={filtraProdutosPorMarca} 
+                    priceFilterCallback={filtrarProdutosPeloPreco}
+                />
                 <ListaProdutos products={produtosFiltrados} />
                 <Paginacao />
             </>

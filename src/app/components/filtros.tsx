@@ -5,13 +5,17 @@ interface FiltrosProps {
     filteredBrands: Brand[]
     minPrice: string
     maxPrice: string
-    callback: (args: BrandsObj) => void
+    brandsFilterCallback: (args: BrandsObj) => void
+    priceFilterCallback: (args: PrecosObj) => void
 }
 
 export type BrandsObj = Record<string, {name: boolean, brand_id: string}>
+export type PrecosObj = {
+    preco: string
+}
 
-export default function Filtros({ filteredBrands, minPrice, maxPrice, callback }: FiltrosProps) {
-    const [price, setPrice] = useState(maxPrice)
+export default function Filtros({ filteredBrands, minPrice, maxPrice, brandsFilterCallback, priceFilterCallback }: FiltrosProps) {
+    const [price, setPrice] = useState<PrecosObj>({preco: maxPrice})
     const [brands, setBrands] = useState<BrandsObj>({})
     const step = useMemo(() => parseFloat(maxPrice) / 10, [maxPrice])
     const stepMarkers = useMemo(() => Array.from({ length: 10 }, (v, k) => k), [])
@@ -31,8 +35,12 @@ export default function Filtros({ filteredBrands, minPrice, maxPrice, callback }
     }, [])
 
     useEffect(() => {
-        callback(brands)
+        brandsFilterCallback(brands)
     }, [brands])
+
+    useEffect(() => {
+        priceFilterCallback(price)
+    }, [price])
 
     useEffect(() => {
         let brands_obj: BrandsObj = {}
@@ -56,9 +64,9 @@ export default function Filtros({ filteredBrands, minPrice, maxPrice, callback }
                 Preço mínimo: {minPrice}
                 Preço máximo: {maxPrice}
                 <div className="w-full max-w-xs">
-                    Preço Máximo {price}
+                    Preço Máximo {price.preco}
                     <input 
-                        onChange={(e) => setPrice(e.target.value)}
+                        onChange={(e) => setPrice({preco: e.target.value})}
                         type="range" 
                         min={minPrice} 
                         max={maxPrice} 
